@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kikar Studio — Sistema Diseñador</title>
+<title>Kikar Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
@@ -13,13 +13,12 @@
   --border:#2e2e3a;--border2:#3d3d4e;
   --accent:#c8f55a;--accent2:#a8d43a;
   --text:#f0f0f5;--text2:#9090a0;--text3:#545465;
-  --red:#ff5a5a;--amber:#f5a623;
+  --red:#ff5a5a;
   --fh:'DM Serif Display',serif;--f:'DM Sans',sans-serif;
   --r:10px;--r2:16px;
 }
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;line-height:1.6}
-
 #app{display:flex;height:100vh}
 #sidebar{width:230px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
@@ -38,13 +37,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;
 .sb-add:hover{border-color:var(--accent);color:var(--accent);background:var(--bg3)}
 .sb-footer{padding:14px;font-size:10px;color:var(--text3);text-align:center;margin-top:auto;border-top:1px solid var(--border)}
 
-/* KEYS BAR */
-#keys-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap}
-.key-group{display:flex;align-items:center;gap:6px}
+#keys-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 20px;display:flex;align-items:center;gap:10px;flex-shrink:0}
 .key-label{font-size:10px;color:var(--text3);white-space:nowrap;text-transform:uppercase;letter-spacing:.6px}
-.key-input{background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Courier New',monospace;font-size:11px;padding:5px 9px;outline:none;width:220px}
+.key-input{background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Courier New',monospace;font-size:11px;padding:5px 9px;outline:none;width:260px}
 .key-input:focus{border-color:var(--border2)}
-.key-save{padding:5px 12px;background:var(--accent);border:none;border-radius:7px;color:#0d0d0f;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--f)}
+.key-save{padding:5px 13px;background:var(--accent);border:none;border-radius:7px;color:#0d0d0f;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--f)}
 .key-status{font-size:10px;color:#7bc42a}
 
 #header{padding:16px 24px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0}
@@ -64,7 +61,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;
 
 #content{flex:1;overflow-y:auto;padding:22px 24px}
 
-/* BRIEF */
 .sec{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.9px;font-weight:500;margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 .sec:first-child{margin-top:0}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
@@ -85,7 +81,7 @@ textarea{min-height:72px}
 .chip input[type=color]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;border-radius:7px}
 .chip-del{position:absolute;top:-5px;right:-5px;width:14px;height:14px;border-radius:50%;background:var(--red);border:none;color:#fff;font-size:9px;cursor:pointer;display:none;align-items:center;justify-content:center}
 .chip:hover .chip-del{display:flex}
-.chip-add{background:var(--bg3);border-style:dashed;color:var(--text3);font-size:18px;font-weight:300}
+.chip-add{background:var(--bg3);border-style:dashed;color:var(--text3);font-size:18px}
 .chip-add:hover{border-color:var(--accent);color:var(--accent)}
 .upzone{border:1px dashed var(--border2);border-radius:var(--r2);padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3);position:relative}
 .upzone:hover,.upzone.drag{border-color:var(--accent);background:var(--bg4)}
@@ -97,7 +93,6 @@ textarea{min-height:72px}
 .thumb{width:58px;height:58px;border-radius:7px;object-fit:cover;border:1px solid var(--border2);display:block}
 .tdel{position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:var(--red);border:none;color:#fff;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 
-/* STUDIO */
 .st-grid{display:grid;grid-template-columns:280px 1fr;gap:16px}
 .st-l{display:flex;flex-direction:column;gap:12px}
 .st-r{display:flex;flex-direction:column;gap:12px}
@@ -115,7 +110,6 @@ textarea{min-height:72px}
 .fmt h5{font-size:10px;font-weight:500;color:var(--text)}
 .fmt p{font-size:9px;color:var(--text3)}
 
-/* OUTPUT */
 .out-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
 .out-tabs{display:flex;border-bottom:1px solid var(--border)}
 .ot{padding:9px 14px;font-size:12px;color:var(--text3);cursor:pointer;transition:all .15s;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;font-weight:500}
@@ -123,24 +117,6 @@ textarea{min-height:72px}
 .ot.active{color:var(--accent);border-bottom-color:var(--accent)}
 .op{display:none;padding:16px}
 .op.active{display:block}
-
-/* IMAGE PANEL */
-#img-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
-.img-area{min-height:280px;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative}
-.img-area img{max-width:100%;max-height:400px;display:block;border-radius:0}
-.img-placeholder{text-align:center;color:var(--text3);padding:40px}
-.img-placeholder svg{width:40px;height:40px;margin:0 auto 10px;display:block;opacity:.4}
-.img-placeholder p{font-size:12px}
-.img-actions{padding:12px 14px;display:flex;gap:8px;border-top:1px solid var(--border);background:var(--bg3)}
-.gen-img-btn{flex:1;padding:10px;background:var(--accent);border:none;border-radius:var(--r);color:#0d0d0f;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--f);transition:all .2s}
-.gen-img-btn:hover{background:var(--accent2)}
-.gen-img-btn:disabled{opacity:.4;cursor:not-allowed}
-
-/* ASPECT RATIO PILLS */
-.ar-pills{display:flex;gap:5px;flex-wrap:wrap}
-.ar-pill{padding:3px 10px;border-radius:20px;border:1px solid var(--border2);font-size:11px;color:var(--text2);cursor:pointer;transition:all .15s;user-select:none}
-.ar-pill:hover{border-color:var(--text2)}
-.ar-pill.on{background:var(--accent);border-color:var(--accent);color:#0d0d0f;font-weight:600}
 
 .prompt-box{background:var(--bg);border:1px solid var(--border2);border-radius:9px;padding:13px;font-size:12px;color:var(--accent);line-height:1.85;font-family:'Courier New',monospace;white-space:pre-wrap;word-break:break-word}
 .tool-rec{display:inline-flex;align-items:center;gap:5px;background:#1a2a0a;border:1px solid #3a5a1a;border-radius:6px;padding:3px 9px;font-size:11px;color:#7bc42a;margin-bottom:10px}
@@ -166,10 +142,22 @@ textarea{min-height:72px}
 .loading p{font-size:12px;color:var(--text3)}
 .err-box{background:#1a0808;border:1px solid var(--red);border-radius:9px;padding:12px;font-size:12px;color:#ff9090;line-height:1.7}
 
-/* MODAL */
+.img-area{min-height:280px;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;border-radius:0}
+.img-area img{max-width:100%;max-height:420px;display:block}
+.img-placeholder{text-align:center;color:var(--text3);padding:40px}
+.img-placeholder p{font-size:12px;margin-top:8px}
+.img-actions{padding:11px 14px;display:flex;gap:8px;border-top:1px solid var(--border);background:var(--bg3)}
+.gen-img-btn{flex:1;padding:10px;background:var(--accent);border:none;border-radius:var(--r);color:#0d0d0f;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--f);transition:all .2s}
+.gen-img-btn:hover{background:var(--accent2)}
+.gen-img-btn:disabled{opacity:.4;cursor:not-allowed}
+.ar-pills{display:flex;gap:5px}
+.ar-pill{padding:3px 9px;border-radius:20px;border:1px solid var(--border2);font-size:11px;color:var(--text2);cursor:pointer;transition:all .15s;user-select:none}
+.ar-pill:hover{border-color:var(--text2)}
+.ar-pill.on{background:var(--accent);border-color:var(--accent);color:#0d0d0f;font-weight:600}
+
 #modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:100;display:none;align-items:center;justify-content:center}
 #modal-ov.open{display:flex}
-#modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);width:520px;max-height:85vh;overflow-y:auto;padding:26px}
+#modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);width:500px;max-height:85vh;overflow-y:auto;padding:26px}
 #modal h2{font-family:var(--fh);font-size:21px;margin-bottom:3px}
 #modal .sub{font-size:12px;color:var(--text3);margin-bottom:18px}
 .mg2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
@@ -178,20 +166,16 @@ textarea{min-height:72px}
 
 #toast{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#0d0d0f;padding:9px 16px;border-radius:9px;font-size:12px;font-weight:700;opacity:0;transform:translateY(8px);transition:all .28s;pointer-events:none;z-index:9999}
 #toast.show{opacity:1;transform:translateY(0)}
-
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- SIDEBAR -->
 <div id="sidebar">
   <div class="sb-logo">
     <div class="sb-logo-name">Kikar Studio</div>
-    <div class="sb-logo-sub">Sistema diseñador · IA</div>
+    <div class="sb-logo-sub">Sistema diseñador · Gemini IA</div>
   </div>
   <div class="sb-section">Marcas</div>
   <div id="brand-list"></div>
@@ -202,21 +186,13 @@ textarea{min-height:72px}
   <div class="sb-footer">Kikar Agency · Córdoba</div>
 </div>
 
-<!-- MAIN -->
 <div id="main">
-
-  <!-- API KEYS -->
   <div id="keys-bar">
-    <div class="key-group">
-      <span class="key-label">Claude API</span>
-      <input class="key-input" type="password" id="k-claude" placeholder="sk-ant-api03-...">
-    </div>
-    <div class="key-group">
-      <span class="key-label">Gemini API</span>
-      <input class="key-input" type="password" id="k-gemini" placeholder="AIza...">
-    </div>
-    <button class="key-save" onclick="saveKeys()">Guardar keys</button>
+    <span class="key-label">Gemini API Key</span>
+    <input class="key-input" type="password" id="k-gemini" placeholder="AIzaSy...">
+    <button class="key-save" onclick="saveKey()">Guardar</button>
     <span class="key-status" id="k-status"></span>
+    <span style="font-size:10px;color:var(--text3);margin-left:4px">Usada para brief + imagen (Nano Banana)</span>
   </div>
 
   <div id="header">
@@ -235,7 +211,7 @@ textarea{min-height:72px}
 
   <div id="content">
 
-    <!-- BRIEF TAB -->
+    <!-- BRIEF -->
     <div id="tab-brief">
       <div class="sec">Identidad</div>
       <div class="g2">
@@ -273,12 +249,12 @@ textarea{min-height:72px}
       <div class="g2">
         <div class="fg full">
           <div class="fl">Paleta de colores</div>
-          <div class="fsub">Hacé clic en un chip para editar · + para agregar · hover para eliminar</div>
-          <div class="pal-row" id="pal-row"><div class="chip chip-add" onclick="addChip()" title="Agregar color">+</div></div>
+          <div class="fsub">Clic en chip para editar · + para agregar · hover para eliminar</div>
+          <div class="pal-row" id="pal-row"><div class="chip chip-add" onclick="addChip()">+</div></div>
         </div>
         <div class="fg"><div class="fl">Tipografía principal</div><input type="text" id="bf-typo" placeholder="Playfair Display + Montserrat"></div>
         <div class="fg"><div class="fl">Tipografía secundaria</div><input type="text" id="bf-typo2" placeholder="Opcional"></div>
-        <div class="fg full"><div class="fl">Estética visual</div><div class="fsub" style="margin-bottom:6px">Describí el estilo: tipo de foto, iluminación, sensación, marcas de referencia</div><textarea id="bf-estetica" placeholder="Cálida y sofisticada. Fotografía de ambientes reales con luz natural. Similar a Bo Concept pero accesible..."></textarea></div>
+        <div class="fg full"><div class="fl">Estética visual</div><div class="fsub" style="margin-bottom:6px">Tipo de foto, iluminación, sensación general, marcas similares de referencia</div><textarea id="bf-estetica" placeholder="Cálida y sofisticada. Ambientes reales con luz natural. Similar a Bo Concept pero accesible..."></textarea></div>
       </div>
 
       <div class="sec">Propuesta de valor</div>
@@ -308,13 +284,13 @@ textarea{min-height:72px}
           <div class="upzone" id="ref-z" ondragover="dov(event,'ref-z')" ondragleave="dlv('ref-z')" ondrop="drp(event,'ref-z','ref-t')">
             <input type="file" multiple accept="image/*" onchange="hf(this,'ref-t')">
             <div class="upzone-t">Arrastrá o hacé clic</div>
-            <div class="upzone-s">Referencias de estilo · JPG, PNG, WebP</div>
+            <div class="upzone-s">Refs de estilo · JPG, PNG, WebP</div>
           </div>
           <div class="thumbs" id="ref-t"></div>
         </div>
         <div class="fg full">
           <div class="fl">Fotos de producto actuales</div>
-          <div class="fsub" style="margin-bottom:7px">Base para los prompts de IA — fondo blanco, foto real, etc.</div>
+          <div class="fsub" style="margin-bottom:7px">Base para los prompts de IA</div>
           <div class="upzone" id="prod-z" ondragover="dov(event,'prod-z')" ondragleave="dlv('prod-z')" ondrop="drp(event,'prod-z','prod-t')">
             <input type="file" multiple accept="image/*" onchange="hf(this,'prod-t')">
             <div class="upzone-t">Fotos del producto</div>
@@ -330,11 +306,10 @@ textarea{min-height:72px}
       </div>
     </div>
 
-    <!-- STUDIO TAB -->
+    <!-- STUDIO -->
     <div id="tab-studio" style="display:none">
       <div class="st-grid">
 
-        <!-- LEFT -->
         <div class="st-l">
           <div class="card">
             <div class="card-h">Modo de trabajo</div>
@@ -403,17 +378,15 @@ textarea{min-height:72px}
           </div>
         </div>
 
-        <!-- RIGHT -->
         <div class="st-r">
           <div class="card">
             <div class="card-h">Contexto del pedido</div>
             <div class="card-b">
-              <textarea id="ws-brief" style="min-height:100px;width:100%" placeholder="Describí qué querés comunicar. Producto, oferta, concepto, fecha especial... El sistema usa el brief de la marca y genera todo listo para producir."></textarea>
-              <button class="gen-btn" id="gen-btn" onclick="generate()">Generar brief de producción con Claude →</button>
+              <textarea id="ws-brief" style="min-height:100px;width:100%" placeholder="Describí qué querés comunicar. Producto, oferta, concepto, fecha especial... Gemini usa el brief de la marca y genera todo listo para producir."></textarea>
+              <button class="gen-btn" id="gen-btn" onclick="generate()">Generar brief de producción →</button>
             </div>
           </div>
 
-          <!-- OUTPUT BRIEF -->
           <div id="output-area" style="display:none">
             <div class="out-wrap">
               <div class="out-tabs">
@@ -428,36 +401,37 @@ textarea{min-height:72px}
               <div id="op-specs" class="op"></div>
               <div class="out-acts">
                 <button class="btn" onclick="copyAll()" style="flex:1">Copiar todo</button>
-                <button class="btn pri" onclick="sendToImagen()">Generar imagen con Gemini →</button>
+                <button class="btn pri" onclick="sendToImagen()">Generar imagen →</button>
               </div>
             </div>
           </div>
 
-          <!-- IMAGE GENERATOR -->
           <div id="img-panel" style="display:none">
-            <div class="card-h" style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-              <span style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:500">Generador de imagen — Gemini (Nano Banana)</span>
-              <div class="ar-pills" id="ar-pills">
-                <div class="ar-pill on" onclick="selAR(this,'1:1')">1:1</div>
-                <div class="ar-pill" onclick="selAR(this,'4:3')">4:3</div>
-                <div class="ar-pill" onclick="selAR(this,'3:4')">3:4</div>
-                <div class="ar-pill" onclick="selAR(this,'16:9')">16:9</div>
-                <div class="ar-pill" onclick="selAR(this,'9:16')">9:16</div>
+            <div class="card">
+              <div class="card-h" style="display:flex;align-items:center;justify-content:space-between">
+                <span>Generador de imagen — Nano Banana (Gemini)</span>
+                <div class="ar-pills" id="ar-pills">
+                  <div class="ar-pill on" onclick="selAR(this,'1:1')">1:1</div>
+                  <div class="ar-pill" onclick="selAR(this,'4:3')">4:3</div>
+                  <div class="ar-pill" onclick="selAR(this,'3:4')">3:4</div>
+                  <div class="ar-pill" onclick="selAR(this,'16:9')">16:9</div>
+                  <div class="ar-pill" onclick="selAR(this,'9:16')">9:16</div>
+                </div>
               </div>
-            </div>
-            <div style="padding:12px 14px;border-bottom:1px solid var(--border)">
-              <textarea id="img-prompt" style="min-height:72px;width:100%;font-size:12px" placeholder="El prompt se pre-carga desde el brief de producción. Podés editarlo antes de generar."></textarea>
-            </div>
-            <div class="img-area" id="img-area">
-              <div class="img-placeholder">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l4-4 3 3 4-5 7 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-                <p>La imagen generada aparece acá</p>
+              <div style="padding:12px 14px;border-bottom:1px solid var(--border)">
+                <textarea id="img-prompt" style="min-height:72px;width:100%;font-size:12px" placeholder="El prompt se pre-carga desde el brief. Podés editarlo antes de generar."></textarea>
               </div>
-            </div>
-            <div class="img-actions">
-              <button class="gen-img-btn" id="img-btn" onclick="generateImage()">Generar imagen</button>
-              <button class="btn" id="dl-btn" onclick="downloadImage()" style="display:none">Descargar</button>
-              <button class="btn" onclick="generateImage()" id="regen-btn" style="display:none">Regenerar</button>
+              <div class="img-area" id="img-area">
+                <div class="img-placeholder">
+                  <svg width="36" height="36" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1" style="margin:0 auto;display:block;opacity:.3"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l4-4 3 3 4-5 7 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
+                  <p>La imagen generada aparece acá</p>
+                </div>
+              </div>
+              <div class="img-actions">
+                <button class="gen-img-btn" id="img-btn" onclick="generateImage()">Generar imagen</button>
+                <button class="btn" id="dl-btn" onclick="downloadImage()" style="display:none">Descargar</button>
+                <button class="btn" id="regen-btn" onclick="generateImage()" style="display:none">Regenerar</button>
+              </div>
             </div>
           </div>
 
@@ -469,223 +443,175 @@ textarea{min-height:72px}
 </div>
 </div>
 
-<!-- MODAL NUEVA MARCA -->
 <div id="modal-ov">
   <div id="modal">
     <h2>Nueva marca</h2>
-    <p class="sub">Datos mínimos para crearla. Completás el brief completo desde el sidebar.</p>
+    <p class="sub">Datos mínimos. Completás el brief desde el sidebar.</p>
     <div class="mg2">
       <div class="fg"><div class="fl">Nombre</div><input type="text" id="m-nombre" placeholder="Ej: Alquimia"></div>
-      <div class="fg"><div class="fl">Rubro</div><input type="text" id="m-rubro" placeholder="Ej: Indumentaria femenina"></div>
+      <div class="fg"><div class="fl">Rubro</div><input type="text" id="m-rubro" placeholder="Ej: Indumentaria"></div>
       <div class="fg full"><div class="fl">Color principal</div><input type="text" id="m-color" placeholder="#hexcode"></div>
     </div>
     <div class="m-acts">
       <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn pri" onclick="createBrand()">Crear marca →</button>
+      <button class="btn pri" onclick="createBrand()">Crear →</button>
     </div>
   </div>
 </div>
-
 <div id="toast"></div>
 
 <script>
-// ── STATE ──
 let brands = {
-  ds:{id:'ds',nombre:'DS Muebles',rubro:'Muebles y decoración para el hogar',color:'#e8593c',tono:'Profesional, Cálido, Cercano',publico:'Familias argentinas de clase media-alta, 30-55 años, que buscan renovar su hogar con estilo. Valoran la calidad y el diseño. Compran por cuotas.',paleta:['#1a1a2e','#e8593c','#f5f0e8','#8b7355'],typo:'Playfair Display + Montserrat',typo2:'',estetica:'Cálida y sofisticada. Fotografía de ambientes reales con luz natural. Predominan maderas, beige y toques de terracota. Similar a Bo Concept pero accesible.',propuesta:'Fabricación propia, entrega en 15-20 días. Diseño exclusivo. 18 cuotas sin interés.',ctas:'Consultanos por WhatsApp · Enviamos a todo el país · Armado incluido · 18 cuotas sin interés',handle:'@dsmuebles.cba',web:'dsmuebles.com.ar',formatos:'Carrusel feed, Historias, Foto producto ecommerce, Placas oferta, Meta Ads imagen'},
-  em:{id:'em',nombre:'El Madero',rubro:'Muebles de comedor y living en madera maciza',color:'#c17f4a',tono:'Artesanal, Cálido, Exclusivo, Genuino',publico:'Adultos 35-60 que valoran la artesanía, durabilidad y lo hecho a mano.',paleta:['#2d1b0e','#c17f4a','#f9f3ec','#4a3728'],typo:'Cormorant Garamond + Source Sans Pro',typo2:'',estetica:'Rústico refinado. Maderas con veta visible, ambientes de casa de campo moderna, luz cálida.',propuesta:'Muebles únicos hechos a mano en taller propio en Córdoba.',ctas:'Ver en showroom · Hacelo a tu medida · Consultar precio mayorista',handle:'@elmadero.cba',web:'',formatos:'Carrusel feed, Foto producto ecommerce, Tienda Nube'},
+  ds:{id:'ds',nombre:'DS Muebles',rubro:'Muebles y decoración para el hogar',color:'#e8593c',tono:'Profesional, Cálido, Cercano',publico:'Familias argentinas de clase media-alta, 30-55 años, que buscan renovar su hogar con estilo. Valoran calidad y diseño. Compran por cuotas.',paleta:['#1a1a2e','#e8593c','#f5f0e8','#8b7355'],typo:'Playfair Display + Montserrat',typo2:'',estetica:'Cálida y sofisticada. Fotografía de ambientes reales con luz natural. Predominan maderas, beige y terracota. Similar a Bo Concept pero accesible.',propuesta:'Fabricación propia, entrega 15-20 días. Diseño exclusivo. 18 cuotas sin interés.',ctas:'Consultanos por WhatsApp · Enviamos a todo el país · Armado incluido · 18 cuotas sin interés',handle:'@dsmuebles.cba',web:'dsmuebles.com.ar',formatos:'Carrusel feed, Historias, Foto producto ecommerce, Placas oferta, Meta Ads imagen'},
+  em:{id:'em',nombre:'El Madero',rubro:'Muebles de comedor y living en madera maciza',color:'#c17f4a',tono:'Artesanal, Cálido, Exclusivo, Genuino',publico:'Adultos 35-60 que valoran la artesanía y lo hecho a mano.',paleta:['#2d1b0e','#c17f4a','#f9f3ec','#4a3728'],typo:'Cormorant Garamond + Source Sans Pro',typo2:'',estetica:'Rústico refinado. Maderas con veta visible, ambientes de casa de campo moderna, luz cálida.',propuesta:'Muebles únicos hechos a mano en taller propio en Córdoba.',ctas:'Ver en showroom · Hacelo a tu medida · Consultar precio mayorista',handle:'@elmadero.cba',web:'',formatos:'Carrusel feed, Foto producto ecommerce, Tienda Nube'},
   bl:{id:'bl',nombre:'Blessing',rubro:'Textiles del hogar y ropa de cama',color:'#9f7aea',tono:'Femenino, Cálido, Aspiracional, Hogareño',publico:'Mujeres 25-45 que compran por Instagram y buscan estética para su casa.',paleta:['#f7e8d4','#d4a896','#8b4c6b','#ffffff'],typo:'Cormorant + Lato',typo2:'',estetica:'Flat lay estilizado, texturas suaves, mucho blanco y nude. Muy Instagram.',propuesta:'Calidad premium a precio accesible. Diseños exclusivos.',ctas:'Ver la colección · Stock limitado · Envío gratis',handle:'@blessinghogar',web:'',formatos:'Carrusel feed, Historias, Foto producto ecommerce'},
   dv:{id:'dv',nombre:'Deco & Vita',rubro:'Pintura y materiales decorativos para el hogar',color:'#48bb78',tono:'Inspirador, Práctico, Moderno, Cercano',publico:'Personas que hacen reformas o decoración DIY, 25-50 años.',paleta:['#f0f4ff','#4a90d9','#f5a623','#2d3748'],typo:'Nunito + Open Sans',typo2:'',estetica:'Colorida pero ordenada. Fotos de ambiente con paletas específicas.',propuesta:'Amplio catálogo, asesoramiento de paletas, colores exclusivos.',ctas:'Ver catálogo · Pedí tu muestra · Asesoramiento gratis',handle:'@decovita.ar',web:'',formatos:'Carrusel feed, Historias, Meta Ads imagen'}
 };
 
-let curBrand = null;
-let curMode = 'pieza';
-let curFmt = 'carrusel';
-let curAR = '1:1';
-let lastOutput = {};
-let lastPromptIA = '';
-let claudeKey = '';
-let geminiKey = '';
-let currentImgData = null;
+let curBrand=null, curMode='pieza', curFmt='carrusel', curAR='1:1';
+let lastOutput={}, lastPromptIA='', geminiKey='', currentImgData=null;
 
-// ── INIT ──
-window.onload = () => {
-  const saved = localStorage.getItem('ks_brands');
-  if(saved) try { brands = JSON.parse(saved); } catch(e){}
-  claudeKey = localStorage.getItem('ks_claude') || '';
-  geminiKey = localStorage.getItem('ks_gemini') || '';
-  if(claudeKey) document.getElementById('k-claude').value = claudeKey;
-  if(geminiKey) document.getElementById('k-gemini').value = geminiKey;
-  if(claudeKey || geminiKey) document.getElementById('k-status').textContent = 'Keys cargadas ✓';
+window.onload=()=>{
+  const s=localStorage.getItem('ks_brands');
+  if(s) try{brands=JSON.parse(s);}catch(e){}
+  geminiKey=localStorage.getItem('ks_gemini')||'';
+  if(geminiKey){document.getElementById('k-gemini').value=geminiKey;document.getElementById('k-status').textContent='Key cargada ✓';}
   renderSidebar();
   selectBrand('ds');
 };
 
-function saveKeys() {
-  claudeKey = document.getElementById('k-claude').value.trim();
-  geminiKey = document.getElementById('k-gemini').value.trim();
-  if(claudeKey) localStorage.setItem('ks_claude', claudeKey);
-  if(geminiKey) localStorage.setItem('ks_gemini', geminiKey);
-  document.getElementById('k-status').textContent = 'Guardadas ✓';
-  toast('Keys guardadas');
+function saveKey(){
+  geminiKey=document.getElementById('k-gemini').value.trim();
+  if(!geminiKey){toast('Ingresá tu Gemini API key');return;}
+  localStorage.setItem('ks_gemini',geminiKey);
+  document.getElementById('k-status').textContent='Guardada ✓';
+  toast('Key guardada ✓');
 }
 
-// ── SIDEBAR ──
-function renderSidebar() {
-  const list = document.getElementById('brand-list');
-  list.innerHTML = '';
-  Object.values(brands).forEach(b => {
-    const el = document.createElement('div');
-    el.className = 'brand-item' + (curBrand === b.id ? ' active' : '');
-    el.dataset.id = b.id;
-    el.onclick = () => selectBrand(b.id);
-    el.innerHTML = `<div class="brand-dot" style="background:${b.color}"></div><span class="brand-name">${b.nombre}</span><span class="brand-ok">Brief</span>`;
+function renderSidebar(){
+  const list=document.getElementById('brand-list');
+  list.innerHTML='';
+  Object.values(brands).forEach(b=>{
+    const el=document.createElement('div');
+    el.className='brand-item'+(curBrand===b.id?' active':'');
+    el.dataset.id=b.id;
+    el.onclick=()=>selectBrand(b.id);
+    el.innerHTML=`<div class="brand-dot" style="background:${b.color}"></div><span class="brand-name">${b.nombre}</span><span class="brand-ok">Brief</span>`;
     list.appendChild(el);
   });
 }
 
-function selectBrand(id) {
-  curBrand = id;
-  renderSidebar();
-  const b = brands[id];
-  document.getElementById('h-title').textContent = b.nombre;
-  document.getElementById('h-badge').textContent = b.rubro;
+function selectBrand(id){
+  curBrand=id; renderSidebar();
+  const b=brands[id];
+  document.getElementById('h-title').textContent=b.nombre;
+  document.getElementById('h-badge').textContent=b.rubro;
   loadBriefForm(b);
-  document.getElementById('output-area').style.display = 'none';
-  document.getElementById('img-panel').style.display = 'none';
+  document.getElementById('output-area').style.display='none';
+  document.getElementById('img-panel').style.display='none';
 }
 
-// ── BRIEF FORM ──
-function loadBriefForm(b) {
-  document.getElementById('bf-nombre').value = b.nombre||'';
-  document.getElementById('bf-rubro').value = b.rubro||'';
-  document.getElementById('bf-handle').value = b.handle||'';
-  document.getElementById('bf-web').value = b.web||'';
-  document.getElementById('bf-color').value = b.color||'';
-  document.getElementById('bf-typo').value = b.typo||'';
-  document.getElementById('bf-typo2').value = b.typo2||'';
-  document.getElementById('bf-publico').value = b.publico||'';
-  document.getElementById('bf-estetica').value = b.estetica||'';
-  document.getElementById('bf-propuesta').value = b.propuesta||'';
-  document.getElementById('bf-ctas').value = b.ctas||'';
-  document.querySelectorAll('#tono-pills .pill').forEach(p => p.classList.toggle('on', (b.tono||'').includes(p.textContent)));
-  document.querySelectorAll('#fmt-pills .pill').forEach(p => p.classList.toggle('on', (b.formatos||'').includes(p.textContent)));
-  const row = document.getElementById('pal-row');
-  row.innerHTML = '<div class="chip chip-add" onclick="addChip()" title="Agregar">+</div>';
-  (b.paleta||[]).forEach(c => addChipColor(c));
+function loadBriefForm(b){
+  ['nombre','rubro','handle','web','color','typo','typo2','publico','estetica','propuesta','ctas'].forEach(k=>{
+    const el=document.getElementById('bf-'+k);
+    if(el) el.value=b[k]||'';
+  });
+  document.querySelectorAll('#tono-pills .pill').forEach(p=>p.classList.toggle('on',(b.tono||'').includes(p.textContent)));
+  document.querySelectorAll('#fmt-pills .pill').forEach(p=>p.classList.toggle('on',(b.formatos||'').includes(p.textContent)));
+  const row=document.getElementById('pal-row');
+  row.innerHTML='<div class="chip chip-add" onclick="addChip()">+</div>';
+  (b.paleta||[]).forEach(c=>addChipColor(c));
 }
 
-function saveBrief(goStudio=false) {
-  if(!curBrand) { toast('Seleccioná una marca'); return; }
-  const b = brands[curBrand];
-  b.nombre = document.getElementById('bf-nombre').value;
-  b.rubro = document.getElementById('bf-rubro').value;
-  b.handle = document.getElementById('bf-handle').value;
-  b.web = document.getElementById('bf-web').value;
-  b.color = document.getElementById('bf-color').value || b.color;
-  b.typo = document.getElementById('bf-typo').value;
-  b.typo2 = document.getElementById('bf-typo2').value;
-  b.publico = document.getElementById('bf-publico').value;
-  b.estetica = document.getElementById('bf-estetica').value;
-  b.propuesta = document.getElementById('bf-propuesta').value;
-  b.ctas = document.getElementById('bf-ctas').value;
-  b.tono = Array.from(document.querySelectorAll('#tono-pills .pill.on')).map(p=>p.textContent).join(', ');
-  b.formatos = Array.from(document.querySelectorAll('#fmt-pills .pill.on')).map(p=>p.textContent).join(', ');
-  b.paleta = Array.from(document.querySelectorAll('#pal-row .chip:not(.chip-add)')).map(c=>c.title);
-  localStorage.setItem('ks_brands', JSON.stringify(brands));
-  renderSidebar();
-  toast('Brief guardado ✓');
+function saveBrief(goStudio=false){
+  if(!curBrand){toast('Seleccioná una marca');return;}
+  const b=brands[curBrand];
+  ['nombre','rubro','handle','web','color','typo','typo2','publico','estetica','propuesta','ctas'].forEach(k=>{
+    const el=document.getElementById('bf-'+k);
+    if(el) b[k]=el.value;
+  });
+  if(b.color) b.color=b.color;
+  b.tono=Array.from(document.querySelectorAll('#tono-pills .pill.on')).map(p=>p.textContent).join(', ');
+  b.formatos=Array.from(document.querySelectorAll('#fmt-pills .pill.on')).map(p=>p.textContent).join(', ');
+  b.paleta=Array.from(document.querySelectorAll('#pal-row .chip:not(.chip-add)')).map(c=>c.title);
+  localStorage.setItem('ks_brands',JSON.stringify(brands));
+  renderSidebar(); toast('Brief guardado ✓');
   if(goStudio) showTab('studio');
 }
 
-// ── PALETTE ──
-function addChip() {
-  const inp = document.createElement('input');
-  inp.type = 'color';
-  inp.style.cssText = 'position:absolute;opacity:0;width:0;height:0';
+function addChip(){
+  const inp=document.createElement('input'); inp.type='color';
+  inp.style.cssText='position:absolute;opacity:0;width:0;height:0';
   document.body.appendChild(inp);
-  inp.onchange = () => { addChipColor(inp.value); document.body.removeChild(inp); };
+  inp.onchange=()=>{addChipColor(inp.value);document.body.removeChild(inp);};
   inp.click();
 }
-function addChipColor(hex) {
-  const row = document.getElementById('pal-row');
-  const chip = document.createElement('div');
-  chip.className = 'chip';
-  chip.style.background = hex;
-  chip.title = hex;
-  const ci = document.createElement('input');
-  ci.type = 'color';
-  ci.value = hex;
-  ci.oninput = () => { chip.style.background = ci.value; chip.title = ci.value; };
-  const del = document.createElement('button');
-  del.className = 'chip-del';
-  del.textContent = '×';
-  del.onclick = e => { e.stopPropagation(); chip.remove(); };
-  chip.appendChild(ci);
-  chip.appendChild(del);
-  row.insertBefore(chip, row.lastElementChild);
+function addChipColor(hex){
+  const row=document.getElementById('pal-row');
+  const chip=document.createElement('div'); chip.className='chip'; chip.style.background=hex; chip.title=hex;
+  const ci=document.createElement('input'); ci.type='color'; ci.value=hex;
+  ci.oninput=()=>{chip.style.background=ci.value;chip.title=ci.value;};
+  const del=document.createElement('button'); del.className='chip-del'; del.textContent='×';
+  del.onclick=e=>{e.stopPropagation();chip.remove();};
+  chip.appendChild(ci); chip.appendChild(del);
+  row.insertBefore(chip,row.lastElementChild);
 }
 
-// ── UI HELPERS ──
-function tp(el) { el.classList.toggle('on'); }
-function showTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-  document.getElementById('tab-brief').style.display = tab==='brief' ? 'block' : 'none';
-  document.getElementById('tab-studio').style.display = tab==='studio' ? 'block' : 'none';
+function tp(el){el.classList.toggle('on');}
+function showTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
+  document.getElementById('tab-brief').style.display=tab==='brief'?'block':'none';
+  document.getElementById('tab-studio').style.display=tab==='studio'?'block':'none';
 }
-function selMode(el, m) { curMode=m; document.querySelectorAll('.mode-opt').forEach(c=>c.classList.remove('sel')); el.classList.add('sel'); }
-function selFmt(el, f) { curFmt=f; document.querySelectorAll('.fmt').forEach(c=>c.classList.remove('sel')); el.classList.add('sel'); }
-function selAR(el, ar) { curAR=ar; document.querySelectorAll('.ar-pill').forEach(c=>c.classList.remove('on')); el.classList.add('on'); }
-function showOT(el, pid) {
+function selMode(el,m){curMode=m;document.querySelectorAll('.mode-opt').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function selFmt(el,f){curFmt=f;document.querySelectorAll('.fmt').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function selAR(el,ar){curAR=ar;document.querySelectorAll('.ar-pill').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+function showOT(el,pid){
   document.querySelectorAll('.ot').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.op').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById(pid).classList.add('active');
+  el.classList.add('active'); document.getElementById(pid).classList.add('active');
 }
-function hf(input, tid) { renderThumbs(Array.from(input.files), tid); }
-function dov(e, zid) { e.preventDefault(); document.getElementById(zid).classList.add('drag'); }
-function dlv(zid) { document.getElementById(zid).classList.remove('drag'); }
-function drp(e, zid, tid) { e.preventDefault(); dlv(zid); renderThumbs(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')), tid); }
-function renderThumbs(files, tid) {
-  const c = document.getElementById(tid);
-  files.forEach(f => {
-    const r = new FileReader();
-    r.onload = e => {
-      const w = document.createElement('div'); w.className='tw';
-      const img = document.createElement('img'); img.src=e.target.result; img.className='thumb';
-      const d = document.createElement('button'); d.className='tdel'; d.textContent='×'; d.onclick=()=>w.remove();
-      w.appendChild(img); w.appendChild(d); c.appendChild(w);
-    };
-    r.readAsDataURL(f);
+function hf(input,tid){renderThumbs(Array.from(input.files),tid);}
+function dov(e,zid){e.preventDefault();document.getElementById(zid).classList.add('drag');}
+function dlv(zid){document.getElementById(zid).classList.remove('drag');}
+function drp(e,zid,tid){e.preventDefault();dlv(zid);renderThumbs(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')),tid);}
+function renderThumbs(files,tid){
+  const c=document.getElementById(tid);
+  files.forEach(f=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      const w=document.createElement('div');w.className='tw';
+      const img=document.createElement('img');img.src=e.target.result;img.className='thumb';
+      const d=document.createElement('button');d.className='tdel';d.textContent='×';d.onclick=()=>w.remove();
+      w.appendChild(img);w.appendChild(d);c.appendChild(w);
+    };r.readAsDataURL(f);
   });
 }
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2400);
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
 }
 
-// ── CLAUDE: GENERATE BRIEF ──
-async function generate() {
-  if(!curBrand) { toast('Seleccioná una marca primero'); return; }
-  if(!claudeKey) { toast('Guardá tu Claude API key primero'); return; }
-  const brief = document.getElementById('ws-brief').value.trim();
-  if(!brief) { toast('Completá el contexto del pedido'); return; }
+// ── GEMINI: GENERAR BRIEF ──
+async function generate(){
+  if(!curBrand){toast('Seleccioná una marca primero');return;}
+  if(!geminiKey){toast('Guardá tu Gemini API key primero');return;}
+  const brief=document.getElementById('ws-brief').value.trim();
+  if(!brief){toast('Completá el contexto del pedido');return;}
 
-  const b = brands[curBrand];
-  const objetivo = Array.from(document.querySelectorAll('#obj-pills .pill.on')).map(p=>p.textContent).join(', ') || 'Orgánico';
-  const plataforma = Array.from(document.querySelectorAll('#plat-pills .pill.on')).map(p=>p.textContent).join(', ') || 'Instagram';
+  const b=brands[curBrand];
+  const objetivo=Array.from(document.querySelectorAll('#obj-pills .pill.on')).map(p=>p.textContent).join(', ')||'Orgánico';
+  const plataforma=Array.from(document.querySelectorAll('#plat-pills .pill.on')).map(p=>p.textContent).join(', ')||'Instagram';
 
-  const btn = document.getElementById('gen-btn');
-  btn.disabled = true; btn.textContent = 'Generando con Claude...';
-  document.getElementById('output-area').style.display = 'block';
-  document.getElementById('img-panel').style.display = 'none';
+  const btn=document.getElementById('gen-btn');
+  btn.disabled=true; btn.textContent='Generando...';
+  document.getElementById('output-area').style.display='block';
+  document.getElementById('img-panel').style.display='none';
+  const loading=`<div class="loading"><div class="spinner"></div><p>Armando brief para ${b.nombre}...</p></div>`;
+  ['op-prompt','op-struct','op-copy','op-specs'].forEach(id=>document.getElementById(id).innerHTML=loading);
 
-  const loading = `<div class="loading"><div class="spinner"></div><p>Armando brief para ${b.nombre}...</p></div>`;
-  ['op-prompt','op-struct','op-copy','op-specs'].forEach(id => document.getElementById(id).innerHTML = loading);
-
-  const sysPrompt = `Sos el motor de producción de Kikar Studio, agencia de marketing en Córdoba, Argentina. Generás briefs de producción completos y ejecutables para piezas de contenido digital de alta calidad.
+  const prompt=`Sos el motor de producción de Kikar Studio, agencia de marketing en Córdoba, Argentina. Generás briefs de producción completos y ejecutables para piezas de contenido digital.
 
 BRIEF DE MARCA — ${b.nombre}
 Rubro: ${b.rubro}
@@ -707,198 +633,172 @@ Descripción: ${brief}
 
 Respondé SOLO con JSON válido, sin markdown, sin texto fuera del JSON:
 {
-  "herramienta_recomendada": "Una línea: Nano Banana (Gemini) o Imagen 4 y por qué para este pedido específico",
-  "prompt_ia": "Prompt completo en INGLÉS para Gemini imagen. Muy detallado: estilo fotográfico, iluminación, composición, mood, cámara, post-processing, referencias de marcas. Adaptado 100% a la estética de ${b.nombre}. Máximo 400 palabras.",
+  "herramienta_recomendada": "Una línea explicando qué modelo de Nano Banana/Gemini usar y por qué",
+  "prompt_ia": "Prompt completo en INGLÉS para Gemini imagen. Muy detallado: estilo fotográfico, iluminación, composición, mood, cámara, post-processing. Adaptado 100% a la estética de ${b.nombre}.",
   "estructura": [{"num":"1","titulo":"Nombre del slide","descripcion":"Qué va, qué imagen, qué elementos visuales","texto_visual":"Texto exacto que aparece en pantalla"}],
-  "copy": "Copy completo listo para usar en español argentino. Texto de cada slide, hashtags, pie de foto.",
+  "copy": "Copy completo listo para usar en español argentino con el tono exacto de la marca. Incluye texto de cada slide, hashtags y pie de foto.",
   "specs": {
     "dimensiones": "px exactos según formato y plataforma",
-    "herramienta_imagen": "Cómo usar Gemini para este pedido específico",
-    "herramienta_composicion": "Canva Pro / Photoshop — qué hacer en cada paso",
-    "paleta_usar": "Colores hex específicos a usar en esta pieza",
+    "herramienta_imagen": "Cómo usar Gemini imagen para este pedido",
+    "herramienta_composicion": "Canva Pro o Photoshop — pasos concretos",
+    "paleta_usar": "Colores hex específicos a usar",
     "tipografia_usar": "Tipografías y jerarquía",
     "formato_exportar": "JPG/PNG, resolución, peso",
     "notas_tecnicas": "Notas adicionales de producción"
   }
 }`;
 
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': claudeKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 2000, messages: [{ role: 'user', content: sysPrompt }] })
+  try{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiKey}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:2500}})
     });
-    if(!res.ok) { const e = await res.json(); throw new Error(e.error?.message || `HTTP ${res.status}`); }
-    const data = await res.json();
-    const text = data.content?.[0]?.text || '';
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||`HTTP ${res.status}`);}
+    const data=await res.json();
+    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
     let parsed;
-    try { const s=text.indexOf('{'),e=text.lastIndexOf('}'); parsed=JSON.parse(text.slice(s,e+1)); }
-    catch(e) { throw new Error('Error parseando respuesta de Claude. Reintentá.'); }
-    lastOutput = parsed;
-    lastPromptIA = parsed.prompt_ia || '';
+    try{
+      const clean=text.replace(/```json|```/g,'').trim();
+      const s=clean.indexOf('{'),e=clean.lastIndexOf('}');
+      parsed=JSON.parse(clean.slice(s,e+1));
+    }catch(e){throw new Error('Error parseando respuesta. Reintentá.');}
+    lastOutput=parsed; lastPromptIA=parsed.prompt_ia||'';
     renderOutput(parsed);
-  } catch(err) {
-    const errHtml = `<div class="err-box"><strong>Error:</strong> ${err.message}</div>`;
-    ['op-prompt','op-struct','op-copy','op-specs'].forEach(id => document.getElementById(id).innerHTML = errHtml);
+  }catch(err){
+    const errHtml=`<div class="err-box"><strong>Error:</strong> ${err.message}</div>`;
+    ['op-prompt','op-struct','op-copy','op-specs'].forEach(id=>document.getElementById(id).innerHTML=errHtml);
   }
-  btn.disabled = false; btn.textContent = 'Generar brief de producción con Claude →';
+  btn.disabled=false; btn.textContent='Generar brief de producción →';
 }
 
-function renderOutput(d) {
-  document.getElementById('op-prompt').innerHTML = `
+function renderOutput(d){
+  document.getElementById('op-prompt').innerHTML=`
     <div class="tool-rec">${esc(d.herramienta_recomendada||'')}</div>
     <div class="prompt-box">${esc(d.prompt_ia||'')}</div>`;
-
-  let eHtml = '';
-  if(Array.isArray(d.estructura)) {
-    d.estructura.forEach(s => {
-      eHtml += `<div class="slide-card">
+  let eHtml='';
+  if(Array.isArray(d.estructura)){
+    d.estructura.forEach(s=>{
+      eHtml+=`<div class="slide-card">
         <div class="slide-num">Slide ${s.num}</div>
         <div class="slide-title">${esc(s.titulo||'')}</div>
         <div class="slide-desc">${esc(s.descripcion||'')}</div>
-        ${s.texto_visual ? `<div class="slide-copy">"${esc(s.texto_visual)}"</div>` : ''}
+        ${s.texto_visual?`<div class="slide-copy">"${esc(s.texto_visual)}"</div>`:''}
       </div>`;
     });
-  } else { eHtml = `<div class="copy-block">${esc(String(d.estructura||''))}</div>`; }
-  document.getElementById('op-struct').innerHTML = eHtml;
-  document.getElementById('op-copy').innerHTML = `<div class="copy-block">${esc(d.copy||'')}</div>`;
-
-  const sp = d.specs||{};
-  const rows = [['Dimensiones',sp.dimensiones],['Herramienta imagen',sp.herramienta_imagen],['Composición',sp.herramienta_composicion],['Paleta',sp.paleta_usar],['Tipografía',sp.tipografia_usar],['Exportar',sp.formato_exportar],['Notas',sp.notas_tecnicas]].filter(([,v])=>v);
-  document.getElementById('op-specs').innerHTML = rows.map(([k,v])=>`<div class="spec-row"><span class="spec-k">${k}</span><span class="spec-v">${esc(v)}</span></div>`).join('');
+  }else{eHtml=`<div class="copy-block">${esc(String(d.estructura||''))}</div>`;}
+  document.getElementById('op-struct').innerHTML=eHtml;
+  document.getElementById('op-copy').innerHTML=`<div class="copy-block">${esc(d.copy||'')}</div>`;
+  const sp=d.specs||{};
+  const rows=[['Dimensiones',sp.dimensiones],['Herramienta imagen',sp.herramienta_imagen],['Composición',sp.herramienta_composicion],['Paleta',sp.paleta_usar],['Tipografía',sp.tipografia_usar],['Exportar',sp.formato_exportar],['Notas',sp.notas_tecnicas]].filter(([,v])=>v);
+  document.getElementById('op-specs').innerHTML=rows.map(([k,v])=>`<div class="spec-row"><span class="spec-k">${k}</span><span class="spec-v">${esc(v)}</span></div>`).join('');
 }
 
-function copyAll() {
-  if(!lastOutput.prompt_ia) { toast('Generá primero'); return; }
-  const sp = lastOutput.specs||{};
-  const text = `HERRAMIENTA:\n${lastOutput.herramienta_recomendada}\n\nPROMPT IA:\n${lastOutput.prompt_ia}\n\nESTRUCTURA:\n${Array.isArray(lastOutput.estructura)?lastOutput.estructura.map(s=>`Slide ${s.num}: ${s.titulo}\n${s.descripcion}\nTexto: "${s.texto_visual}"`).join('\n\n'):lastOutput.estructura}\n\nCOPY:\n${lastOutput.copy}\n\nSPECS:\n${Object.entries(sp).map(([k,v])=>`${k}: ${v}`).join('\n')}`;
-  navigator.clipboard.writeText(text);
-  toast('Copiado ✓');
+function copyAll(){
+  if(!lastOutput.prompt_ia){toast('Generá primero');return;}
+  const sp=lastOutput.specs||{};
+  const text=`HERRAMIENTA:\n${lastOutput.herramienta_recomendada}\n\nPROMPT IA:\n${lastOutput.prompt_ia}\n\nESTRUCTURA:\n${Array.isArray(lastOutput.estructura)?lastOutput.estructura.map(s=>`Slide ${s.num}: ${s.titulo}\n${s.descripcion}\nTexto: "${s.texto_visual}"`).join('\n\n'):lastOutput.estructura}\n\nCOPY:\n${lastOutput.copy}\n\nSPECS:\n${Object.entries(sp).map(([k,v])=>`${k}: ${v}`).join('\n')}`;
+  navigator.clipboard.writeText(text); toast('Copiado ✓');
 }
 
-// ── GEMINI: GENERATE IMAGE ──
-function sendToImagen() {
-  if(!lastPromptIA) { toast('Generá el brief primero'); return; }
-  document.getElementById('img-panel').style.display = 'block';
-  document.getElementById('img-prompt').value = lastPromptIA;
-  document.getElementById('img-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+function sendToImagen(){
+  if(!lastPromptIA){toast('Generá el brief primero');return;}
+  document.getElementById('img-panel').style.display='block';
+  document.getElementById('img-prompt').value=lastPromptIA;
+  document.getElementById('img-panel').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-async function generateImage() {
-  if(!geminiKey) { toast('Guardá tu Gemini API key primero'); return; }
-  const prompt = document.getElementById('img-prompt').value.trim();
-  if(!prompt) { toast('El prompt está vacío'); return; }
+// ── GEMINI: GENERAR IMAGEN ──
+async function generateImage(){
+  if(!geminiKey){toast('Guardá tu Gemini API key primero');return;}
+  const prompt=document.getElementById('img-prompt').value.trim();
+  if(!prompt){toast('El prompt está vacío');return;}
 
-  const btn = document.getElementById('img-btn');
-  btn.disabled = true; btn.textContent = 'Generando imagen...';
-  document.getElementById('dl-btn').style.display = 'none';
-  document.getElementById('regen-btn').style.display = 'none';
-  document.getElementById('img-area').innerHTML = `<div class="loading"><div class="spinner"></div><p>Generando con Nano Banana (Gemini)...</p></div>`;
-  currentImgData = null;
+  const btn=document.getElementById('img-btn');
+  btn.disabled=true; btn.textContent='Generando imagen...';
+  document.getElementById('dl-btn').style.display='none';
+  document.getElementById('regen-btn').style.display='none';
+  document.getElementById('img-area').innerHTML=`<div class="loading"><div class="spinner"></div><p>Generando con Nano Banana...</p></div>`;
+  currentImgData=null;
 
-  try {
-    // Usar gemini-2.0-flash-exp con responseModalities imagen
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
+  // Intentar primero con imagen-3.0-generate-002
+  try{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${geminiKey}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        instances:[{prompt}],
+        parameters:{sampleCount:1,aspectRatio:curAR}
       })
     });
-
-    if(!res.ok) {
-      const e = await res.json();
-      // Fallback a imagen-3.0
-      if(res.status === 400 || res.status === 404) {
-        await generateImageImagen3(prompt);
-        return;
-      }
-      throw new Error(e.error?.message || `HTTP ${res.status}`);
-    }
-
-    const data = await res.json();
-    let imgData = null;
-    let mimeType = 'image/png';
-
-    const parts = data.candidates?.[0]?.content?.parts || [];
-    for(const part of parts) {
-      if(part.inlineData) { imgData = part.inlineData.data; mimeType = part.inlineData.mimeType || 'image/png'; break; }
-    }
-
-    if(!imgData) {
-      // Fallback a imagen-3.0 si no devuelve imagen
-      await generateImageImagen3(prompt);
+    if(!res.ok){
+      const e=await res.json();
+      // Si falla imagen-3, intentar con gemini flash
+      await generateImageFlash(prompt);
       return;
     }
-
-    renderImage(imgData, mimeType);
-
-  } catch(err) {
-    document.getElementById('img-area').innerHTML = `<div class="img-placeholder"><div class="err-box" style="text-align:left;max-width:400px">Error: ${err.message}</div></div>`;
+    const data=await res.json();
+    const pred=data.predictions?.[0];
+    if(!pred?.bytesBase64Encoded){await generateImageFlash(prompt);return;}
+    renderImage(pred.bytesBase64Encoded, pred.mimeType||'image/png');
+  }catch(err){
+    try{await generateImageFlash(prompt);}
+    catch(err2){
+      document.getElementById('img-area').innerHTML=`<div class="img-placeholder"><div class="err-box" style="text-align:left;max-width:420px"><strong>Error generando imagen:</strong><br>${err2.message}<br><br>Verificá que tu API key tenga acceso a modelos de imagen en Google AI Studio.</div></div>`;
+    }
   }
-
-  btn.disabled = false; btn.textContent = 'Generar imagen';
+  btn.disabled=false; btn.textContent='Generar imagen';
 }
 
-async function generateImageImagen3(prompt) {
-  // Fallback: Imagen 3 via predict endpoint
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${geminiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      instances: [{ prompt }],
-      parameters: { sampleCount: 1, aspectRatio: curAR }
+async function generateImageFlash(prompt){
+  // Fallback: gemini-2.0-flash-exp con responseModalities
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiKey}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      contents:[{parts:[{text:`Generate an image: ${prompt}`}]}],
+      generationConfig:{responseModalities:['IMAGE','TEXT']}
     })
   });
-
-  if(!res.ok) {
-    const e = await res.json();
-    throw new Error(e.error?.message || `HTTP ${res.status}`);
-  }
-
-  const data = await res.json();
-  const pred = data.predictions?.[0];
-  if(!pred?.bytesBase64Encoded) throw new Error('No se recibió imagen. Verificá que tengas Imagen 3 habilitado en tu proyecto de Google AI.');
-  renderImage(pred.bytesBase64Encoded, pred.mimeType || 'image/png');
-
-  const btn = document.getElementById('img-btn');
-  btn.disabled = false; btn.textContent = 'Generar imagen';
+  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||`HTTP ${res.status}`);}
+  const data=await res.json();
+  const parts=data.candidates?.[0]?.content?.parts||[];
+  let imgData=null, mimeType='image/png';
+  for(const part of parts){if(part.inlineData){imgData=part.inlineData.data;mimeType=part.inlineData.mimeType||'image/png';break;}}
+  if(!imgData) throw new Error('No se recibió imagen. El modelo puede no tener acceso a generación de imágenes en tu región o plan.');
+  renderImage(imgData,mimeType);
+  document.getElementById('img-btn').disabled=false;
+  document.getElementById('img-btn').textContent='Generar imagen';
 }
 
-function renderImage(base64, mimeType) {
-  currentImgData = { base64, mimeType };
-  const src = `data:${mimeType};base64,${base64}`;
-  document.getElementById('img-area').innerHTML = `<img src="${src}" alt="Imagen generada">`;
-  document.getElementById('dl-btn').style.display = 'inline-block';
-  document.getElementById('regen-btn').style.display = 'inline-block';
+function renderImage(base64,mimeType){
+  currentImgData={base64,mimeType};
+  document.getElementById('img-area').innerHTML=`<img src="data:${mimeType};base64,${base64}" alt="Imagen generada" style="max-width:100%;max-height:420px;display:block">`;
+  document.getElementById('dl-btn').style.display='inline-block';
+  document.getElementById('regen-btn').style.display='inline-block';
 }
 
-function downloadImage() {
+function downloadImage(){
   if(!currentImgData) return;
-  const a = document.createElement('a');
-  a.href = `data:${currentImgData.mimeType};base64,${currentImgData.base64}`;
-  const ext = currentImgData.mimeType.includes('jpeg') ? 'jpg' : 'png';
-  const brandName = curBrand ? brands[curBrand].nombre.replace(/\s+/g,'-').toLowerCase() : 'imagen';
-  a.download = `kikar-studio-${brandName}-${Date.now()}.${ext}`;
-  a.click();
-  toast('Descargando imagen ✓');
+  const a=document.createElement('a');
+  a.href=`data:${currentImgData.mimeType};base64,${currentImgData.base64}`;
+  const ext=currentImgData.mimeType.includes('jpeg')?'jpg':'png';
+  const bn=curBrand?brands[curBrand].nombre.replace(/\s+/g,'-').toLowerCase():'imagen';
+  a.download=`kikar-studio-${bn}-${Date.now()}.${ext}`;
+  a.click(); toast('Descargando ✓');
 }
 
-// ── NUEVA MARCA ──
-function openNewBrand() { document.getElementById('modal-ov').classList.add('open'); }
-function closeModal() { document.getElementById('modal-ov').classList.remove('open'); }
-function createBrand() {
-  const nombre = document.getElementById('m-nombre').value.trim();
-  const rubro = document.getElementById('m-rubro').value.trim();
-  const color = document.getElementById('m-color').value.trim() || '#888888';
-  if(!nombre) { toast('Ingresá el nombre'); return; }
-  const id = nombre.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,8) + Date.now().toString().slice(-4);
-  brands[id] = { id, nombre, rubro, color, tono:'', publico:'', paleta:[], typo:'', typo2:'', estetica:'', propuesta:'', ctas:'', handle:'', web:'', formatos:'' };
-  localStorage.setItem('ks_brands', JSON.stringify(brands));
-  closeModal();
-  renderSidebar();
-  selectBrand(id);
+function openNewBrand(){document.getElementById('modal-ov').classList.add('open');}
+function closeModal(){document.getElementById('modal-ov').classList.remove('open');}
+function createBrand(){
+  const nombre=document.getElementById('m-nombre').value.trim();
+  const rubro=document.getElementById('m-rubro').value.trim();
+  const color=document.getElementById('m-color').value.trim()||'#888888';
+  if(!nombre){toast('Ingresá el nombre');return;}
+  const id=nombre.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,8)+Date.now().toString().slice(-4);
+  brands[id]={id,nombre,rubro,color,tono:'',publico:'',paleta:[],typo:'',typo2:'',estetica:'',propuesta:'',ctas:'',handle:'',web:'',formatos:''};
+  localStorage.setItem('ks_brands',JSON.stringify(brands));
+  closeModal(); renderSidebar(); selectBrand(id);
   document.getElementById('m-nombre').value='';
   document.getElementById('m-rubro').value='';
   document.getElementById('m-color').value='';
