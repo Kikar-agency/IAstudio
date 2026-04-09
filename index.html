@@ -631,20 +631,25 @@ Objetivo: ${objetivo}
 Plataforma: ${plataforma}
 Descripción: ${brief}
 
-Respondé SOLO con JSON válido, sin markdown, sin texto fuera del JSON:
+IMPORTANTE: Respondé ÚNICAMENTE con un objeto JSON válido. Sin texto antes ni después. Sin bloques de código markdown. Sin comillas dobles dentro de los valores de string — usá comillas simples si necesitás citar algo dentro de un valor.
+
+Estructura exacta que debés devolver:
 {
-  "herramienta_recomendada": "Una línea explicando qué modelo de Nano Banana/Gemini usar y por qué",
-  "prompt_ia": "Prompt completo en INGLÉS para Gemini imagen. Muy detallado: estilo fotográfico, iluminación, composición, mood, cámara, post-processing. Adaptado 100% a la estética de ${b.nombre}.",
-  "estructura": [{"num":"1","titulo":"Nombre del slide","descripcion":"Qué va, qué imagen, qué elementos visuales","texto_visual":"Texto exacto que aparece en pantalla"}],
-  "copy": "Copy completo listo para usar en español argentino con el tono exacto de la marca. Incluye texto de cada slide, hashtags y pie de foto.",
+  "herramienta_recomendada": "una sola oración sin comillas internas",
+  "prompt_ia": "prompt en inglés muy detallado: estilo fotográfico, iluminación, composición, mood, cámara, colores. Sin comillas dobles adentro.",
+  "estructura": [
+    {"num": "1", "titulo": "titulo sin comillas", "descripcion": "descripcion sin comillas", "texto_visual": "texto que va en pantalla"},
+    {"num": "2", "titulo": "titulo", "descripcion": "descripcion", "texto_visual": "texto"}
+  ],
+  "copy": "copy completo en español argentino. Usa barras verticales para separar slides: Slide 1: texto | Slide 2: texto | Hashtags: #tag1 #tag2",
   "specs": {
-    "dimensiones": "px exactos según formato y plataforma",
-    "herramienta_imagen": "Cómo usar Gemini imagen para este pedido",
-    "herramienta_composicion": "Canva Pro o Photoshop — pasos concretos",
-    "paleta_usar": "Colores hex específicos a usar",
-    "tipografia_usar": "Tipografías y jerarquía",
-    "formato_exportar": "JPG/PNG, resolución, peso",
-    "notas_tecnicas": "Notas adicionales de producción"
+    "dimensiones": "1080x1080px feed / 1080x1920px historia",
+    "herramienta_imagen": "instruccion concreta sin comillas",
+    "herramienta_composicion": "Canva Pro: pasos concretos",
+    "paleta_usar": "colores hex a usar",
+    "tipografia_usar": "tipografias y jerarquia",
+    "formato_exportar": "JPG 90% calidad para Instagram",
+    "notas_tecnicas": "notas adicionales"
   }
 }`;
 
@@ -667,18 +672,40 @@ Respondé SOLO con JSON válido, sin markdown, sin texto fuera del JSON:
     if(!text) throw new Error('Respuesta vacía de Gemini. Reintentá.');
     let parsed;
     try{
-      // Limpiar cualquier wrapper markdown que pueda venir
-      const clean=text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+      const clean=text.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
       parsed=JSON.parse(clean);
     }catch(e){
-      // Segundo intento: extraer el objeto JSON del texto
+      // Extraer campos manualmente con regex si JSON.parse falla
       try{
-        const s=text.indexOf('{'), en=text.lastIndexOf('}');
-        if(s===-1||en===-1) throw new Error('Sin JSON');
-        parsed=JSON.parse(text.slice(s,en+1));
+        const extract=(key)=>{
+          // Buscar "key": "valor" — captura hasta la próxima clave o cierre
+          const re=new RegExp(`"${key}"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"`, 's');
+          const m=text.match(re);
+          return m ? m[1].replace(/\\n/g,'\n').replace(/\\"/g,'"').replace(/\\\\/g,'\\') : '';
+        };
+        const extractArr=(key)=>{
+          const re=new RegExp(`"${key}"\\s*:\\s*(\\[.*?\\])`, 's');
+          const m=text.match(re);
+          if(!m) return [];
+          try{ return JSON.parse(m[1]); }catch(e){ return []; }
+        };
+        const extractObj=(key)=>{
+          const re=new RegExp(`"${key}"\\s*:\\s*(\\{.*?\\})`, 's');
+          const m=text.match(re);
+          if(!m) return {};
+          try{ return JSON.parse(m[1]); }catch(e){ return {}; }
+        };
+        parsed={
+          herramienta_recomendada: extract('herramienta_recomendada'),
+          prompt_ia: extract('prompt_ia'),
+          estructura: extractArr('estructura'),
+          copy: extract('copy'),
+          specs: extractObj('specs')
+        };
+        if(!parsed.prompt_ia) throw new Error('No se pudo extraer prompt_ia');
       }catch(e2){
         console.error('Raw response:', text);
-        throw new Error('Error parseando JSON. Respuesta en consola (F12).');
+        throw new Error('Error parseando respuesta de Gemini. Abrí la consola (F12) para ver la respuesta cruda.');
       }
     }
     lastOutput=parsed; lastPromptIA=parsed.prompt_ia||'';
