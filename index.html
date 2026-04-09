@@ -652,17 +652,35 @@ Respondé SOLO con JSON válido, sin markdown, sin texto fuera del JSON:
     const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:2500}})
+      body:JSON.stringify({
+        contents:[{parts:[{text:prompt}]}],
+        generationConfig:{
+          temperature:0.7,
+          maxOutputTokens:3000,
+          responseMimeType:'application/json'
+        }
+      })
     });
     if(!res.ok){const e=await res.json();throw new Error(e.error?.message||`HTTP ${res.status}`);}
     const data=await res.json();
     const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(!text) throw new Error('Respuesta vacía de Gemini. Reintentá.');
     let parsed;
     try{
-      const clean=text.replace(/```json|```/g,'').trim();
-      const s=clean.indexOf('{'),e=clean.lastIndexOf('}');
-      parsed=JSON.parse(clean.slice(s,e+1));
-    }catch(e){throw new Error('Error parseando respuesta. Reintentá.');}
+      // Limpiar cualquier wrapper markdown que pueda venir
+      const clean=text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+      parsed=JSON.parse(clean);
+    }catch(e){
+      // Segundo intento: extraer el objeto JSON del texto
+      try{
+        const s=text.indexOf('{'), en=text.lastIndexOf('}');
+        if(s===-1||en===-1) throw new Error('Sin JSON');
+        parsed=JSON.parse(text.slice(s,en+1));
+      }catch(e2){
+        console.error('Raw response:', text);
+        throw new Error('Error parseando JSON. Respuesta en consola (F12).');
+      }
+    }
     lastOutput=parsed; lastPromptIA=parsed.prompt_ia||'';
     renderOutput(parsed);
   }catch(err){
