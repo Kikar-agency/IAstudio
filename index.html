@@ -640,8 +640,7 @@ El texto va INTEGRADO en la imagen — no en Canva después.
 Respondé ÚNICAMENTE con JSON válido. Sin markdown. Sin comillas dobles dentro de strings.
 
 {
-  "prompt_ia": "Empieza con [${orientActual}]. Describí: escena completa, ambiente, producto destacado, composición con zonas para texto, iluminación, paleta exacta de colores hex, texto que aparece integrado en la imagen con estilo tipográfico específico, mood general. Que la imagen sea la pieza final publicable. En inglés. Sin comillas dobles.",
-  "texto_en_imagen": "Texto exacto integrado en la imagen: titulo principal | subtitulo | CTA",
+  "texto_en_imagen": "Texto exacto que va integrado EN la imagen: titulo principal | subtitulo | CTA",
   "estructura": [{"num":"1","titulo":"nombre de la pieza","descripcion":"que muestra","texto_visual":"texto en pantalla"}],
   "copy": "Caption para Instagram en español argentino con hashtags al final",
   "specs": {
@@ -655,62 +654,66 @@ Respondé ÚNICAMENTE con JSON válido. Sin markdown. Sin comillas dobles dentro
 }`
 
   try{
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,{
+    // LLAMADA 1: Datos estructurados sin el prompt de imagen (evita problemas de JSON)
+    const res1=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         contents:[{parts:[{text:prompt}]}],
-        generationConfig:{
-          temperature:0.7,
-          maxOutputTokens:3000,
-          responseMimeType:'application/json'
-        }
+        generationConfig:{temperature:0.7,maxOutputTokens:2000,responseMimeType:'application/json'}
       })
     });
-    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||`HTTP ${res.status}`);}
-    const data=await res.json();
-    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(!text) throw new Error('Respuesta vacía de Gemini. Reintentá.');
+    if(!res1.ok){const e=await res1.json();throw new Error(e.error?.message||`HTTP ${res1.status}`);}
+    const data1=await res1.json();
+    const text1=data1.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(!text1) throw new Error('Respuesta vacía de Gemini.');
     let parsed;
     try{
-      const clean=text.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+      const clean=text1.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
       parsed=JSON.parse(clean);
     }catch(e){
-      // Extraer campos manualmente con regex si JSON.parse falla
-      try{
-        const extract=(key)=>{
-          // Buscar "key": "valor" — captura hasta la próxima clave o cierre
-          const re=new RegExp(`"${key}"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"`, 's');
-          const m=text.match(re);
-          return m ? m[1].replace(/\\n/g,'\n').replace(/\\"/g,'"').replace(/\\\\/g,'\\') : '';
-        };
-        const extractArr=(key)=>{
-          const re=new RegExp(`"${key}"\\s*:\\s*(\\[.*?\\])`, 's');
-          const m=text.match(re);
-          if(!m) return [];
-          try{ return JSON.parse(m[1]); }catch(e){ return []; }
-        };
-        const extractObj=(key)=>{
-          const re=new RegExp(`"${key}"\\s*:\\s*(\\{.*?\\})`, 's');
-          const m=text.match(re);
-          if(!m) return {};
-          try{ return JSON.parse(m[1]); }catch(e){ return {}; }
-        };
-        parsed={
-          herramienta_recomendada: extract('herramienta_recomendada'),
-          prompt_ia: extract('prompt_ia'),
-          estructura: extractArr('estructura'),
-          copy: extract('copy'),
-          specs: extractObj('specs')
-        };
-        if(!parsed.prompt_ia) throw new Error('No se pudo extraer prompt_ia');
-      }catch(e2){
-        console.error('Raw response:', text);
-        throw new Error('Error parseando respuesta de Gemini. Abrí la consola (F12) para ver la respuesta cruda.');
-      }
+      console.error('JSON parse error, raw:', text1.slice(0,500));
+      throw new Error('Error en JSON. Reintentá.');
     }
-    lastOutput=parsed; lastPromptIA=parsed.prompt_ia||''; lastTextoImagen=parsed.texto_en_imagen||'';
+
+    // LLAMADA 2: Prompt de imagen como texto plano (sin JSON, sin problemas de comillas)
+    const promptImagen=`You are a professional AI image prompt engineer for a marketing agency in Argentina.
+
+Generate a detailed image generation prompt for Gemini image model. Output ONLY the prompt text, nothing else. No JSON, no labels, no explanation.
+
+Brand: ${b.nombre} | Style: ${b.estetica} | Colors: ${(b.paleta||[]).join(', ')}
+Format: ${orientActual} — STRICTLY enforce this orientation in the image
+Objective: ${objetivo} (${esPaid?'PAID — prominent text, urgency, direct CTA':'ORGANIC — aspirational lifestyle, clean composition'})
+Request: ${brief}
+Text to show in image: ${parsed.texto_en_imagen||''}
+
+Rules:
+- Start with: [${orientActual}]  
+- Describe the complete final publishable piece, not just a background
+- Include exact text overlays with typography style
+- Include color palette usage (hex codes: ${(b.paleta||[]).join(', ')})
+- Include lighting, mood, composition details
+- If paid: include visual urgency elements, badge or stamp design if needed
+- Maximum 250 words`;
+
+    const res2=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        contents:[{parts:[{text:promptImagen}]}],
+        generationConfig:{temperature:0.8,maxOutputTokens:600}
+      })
+    });
+    if(!res2.ok){const e=await res2.json();throw new Error(e.error?.message||`HTTP ${res2.status}`);}
+    const data2=await res2.json();
+    const promptFinal=data2.candidates?.[0]?.content?.parts?.[0]?.text||'';
+
+    parsed.prompt_ia = promptFinal.trim();
+    lastOutput=parsed;
+    lastPromptIA=parsed.prompt_ia||'';
+    lastTextoImagen=parsed.texto_en_imagen||'';
     renderOutput(parsed);
+
   }catch(err){
     const errHtml=`<div class="err-box"><strong>Error:</strong> ${err.message}</div>`;
     ['op-prompt','op-struct','op-copy','op-specs'].forEach(id=>document.getElementById(id).innerHTML=errHtml);
