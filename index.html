@@ -654,61 +654,120 @@ Respondé ÚNICAMENTE con JSON válido. Sin markdown. Sin comillas dobles dentro
 }`
 
   try{
-    // LLAMADA 1: Datos estructurados sin el prompt de imagen (evita problemas de JSON)
+    // Una sola llamada — todo texto plano con delimitadores, sin JSON
+    const promptCompleto=`You are a creative director at Kikar Studio, a marketing agency in Córdoba, Argentina.
+
+Generate a production brief for this content piece. Use EXACTLY this format with the exact markers shown — nothing else before or after:
+
+===TEXTO_IMAGEN===
+[exact text to appear visually integrated IN the image: main title | subtitle | CTA if needed]
+===END===
+
+===ESTRUCTURA===
+[describe what the image shows: scene, product placement, visual hierarchy, mood — 2-3 sentences]
+===END===
+
+===COPY===
+[Instagram caption in Argentine Spanish. Include hashtags at the end.]
+===END===
+
+===SPECS===
+dimensions: ${dimActual}
+orientation: ${orientActual}
+palette: ${(b.paleta||[]).join(', ')}
+typography: ${b.typo}
+export: JPG 90% Instagram
+notes: [any production notes]
+===END===
+
+BRAND: ${b.nombre}
+Style: ${b.estetica}
+Tone: ${b.tono}
+Audience: ${b.publico}
+CTAs: ${b.ctas}
+
+REQUEST
+Format: ${curFmt} — MUST be ${orientActual}
+Objective: ${objetivo} ${esPaid?'(PAID: prominent text, urgency, direct CTA)':'(ORGANIC: aspirational, clean)'}
+Platform: ${plataforma}
+Brief: ${brief}`;
+
     const res1=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        contents:[{parts:[{text:prompt}]}],
-        generationConfig:{temperature:0.7,maxOutputTokens:2000,responseMimeType:'application/json'}
+        contents:[{parts:[{text:promptCompleto}]}],
+        generationConfig:{temperature:0.7,maxOutputTokens:1500}
       })
     });
     if(!res1.ok){const e=await res1.json();throw new Error(e.error?.message||`HTTP ${res1.status}`);}
     const data1=await res1.json();
-    const text1=data1.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(!text1) throw new Error('Respuesta vacía de Gemini.');
-    let parsed;
-    try{
-      const clean=text1.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
-      parsed=JSON.parse(clean);
-    }catch(e){
-      console.error('JSON parse error, raw:', text1.slice(0,500));
-      throw new Error('Error en JSON. Reintentá.');
-    }
+    const raw=data1.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(!raw) throw new Error('Respuesta vacía de Gemini.');
 
-    // LLAMADA 2: Prompt de imagen como texto plano (sin JSON, sin problemas de comillas)
-    const promptImagen=`You are a professional AI image prompt engineer for a marketing agency in Argentina.
+    // Parseo por marcadores — no JSON, nunca falla
+    const extract=(marker)=>{
+      const re=new RegExp(`===\\s*${marker}\\s*===([\\s\\S]*?)===END===`,'i');
+      return (raw.match(re)?.[1]||'').trim();
+    };
+    const textoImagen = extract('TEXTO_IMAGEN');
+    const estructura  = extract('ESTRUCTURA');
+    const copy        = extract('COPY');
+    const specsRaw    = extract('SPECS');
 
-Generate a detailed image generation prompt for Gemini image model. Output ONLY the prompt text, nothing else. No JSON, no labels, no explanation.
+    // Parsear specs línea a línea
+    const specs={};
+    specsRaw.split('\n').forEach(line=>{
+      const [k,...v]=line.split(':');
+      if(k&&v.length) specs[k.trim().toLowerCase().replace(/\s+/g,'_')]=v.join(':').trim();
+    });
+    specs.dimensiones=specs.dimensions||dimActual;
+    specs.orientacion=specs.orientation||orientActual;
+    specs.paleta_usar=specs.palette||(b.paleta||[]).join(', ');
+    specs.tipografia_usar=specs.typography||b.typo;
+    specs.formato_exportar=specs.export||'JPG 90%';
+    specs.notas=specs.notes||'';
 
-Brand: ${b.nombre} | Style: ${b.estetica} | Colors: ${(b.paleta||[]).join(', ')}
-Format: ${orientActual} — STRICTLY enforce this orientation in the image
-Objective: ${objetivo} (${esPaid?'PAID — prominent text, urgency, direct CTA':'ORGANIC — aspirational lifestyle, clean composition'})
-Request: ${brief}
-Text to show in image: ${parsed.texto_en_imagen||''}
+    // LLAMADA 2: Prompt de imagen como texto plano
+    const promptImagen=`You are a professional AI image prompt engineer.
 
-Rules:
-- Start with: [${orientActual}]  
-- Describe the complete final publishable piece, not just a background
-- Include exact text overlays with typography style
-- Include color palette usage (hex codes: ${(b.paleta||[]).join(', ')})
-- Include lighting, mood, composition details
-- If paid: include visual urgency elements, badge or stamp design if needed
-- Maximum 250 words`;
+Write ONLY a detailed image generation prompt — no explanation, no labels, just the prompt text.
+
+Brand: ${b.nombre} | Colors: ${(b.paleta||[]).join(', ')} | Style: ${b.estetica}
+Format: STRICTLY ${orientActual} — the image MUST be this orientation
+Type: ${esPaid?'PAID marketing piece — bold text overlay, urgency, strong CTA':'ORGANIC content — aspirational lifestyle, subtle text'}
+Text to integrate IN image: ${textoImagen||brief}
+Scene/concept: ${estructura||brief}
+
+Requirements:
+- Start with: [${orientActual}]
+- Describe complete final publishable piece (not just background)
+- Include text overlays with exact wording and typography style
+- Use brand colors: ${(b.paleta||[]).join(', ')}
+- Specify lighting, mood, composition
+- ${esPaid?'Include visual urgency: badge, stamp, or highlighted price zone':'Include breathing room, editorial feel'}
+- Max 200 words`;
 
     const res2=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         contents:[{parts:[{text:promptImagen}]}],
-        generationConfig:{temperature:0.8,maxOutputTokens:600}
+        generationConfig:{temperature:0.8,maxOutputTokens:500}
       })
     });
     if(!res2.ok){const e=await res2.json();throw new Error(e.error?.message||`HTTP ${res2.status}`);}
     const data2=await res2.json();
-    const promptFinal=data2.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    const promptFinal=(data2.candidates?.[0]?.content?.parts?.[0]?.text||'').trim();
 
-    parsed.prompt_ia = promptFinal.trim();
+    const parsed={
+      prompt_ia: promptFinal,
+      texto_en_imagen: textoImagen,
+      estructura: [{num:'1',titulo:'Pieza generada',descripcion:estructura,texto_visual:textoImagen}],
+      copy: copy,
+      specs: specs
+    };
+
     lastOutput=parsed;
     lastPromptIA=parsed.prompt_ia||'';
     lastTextoImagen=parsed.texto_en_imagen||'';
