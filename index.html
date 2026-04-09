@@ -766,54 +766,45 @@ async function generateImage(){
   document.getElementById('img-area').innerHTML=`<div class="loading"><div class="spinner"></div><p>Generando con Nano Banana...</p></div>`;
   currentImgData=null;
 
-  // Intentar primero con imagen-3.0-generate-002
-  try{
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${geminiKey}`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        instances:[{prompt}],
-        parameters:{sampleCount:1,aspectRatio:curAR}
-      })
-    });
-    if(!res.ok){
-      const e=await res.json();
-      // Si falla imagen-3, intentar con gemini flash
-      await generateImageFlash(prompt);
+  // Probar modelos en orden: primero gemini-3.1-flash-image-preview, luego gemini-2.5-flash-image
+  const models = [
+    'gemini-3.1-flash-image-preview',
+    'gemini-2.5-flash-image'
+  ];
+
+  let lastErr = null;
+  for(const model of models){
+    try{
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          contents:[{parts:[{text: prompt}]}],
+          generationConfig:{responseModalities:['IMAGE','TEXT']}
+        })
+      });
+      if(!res.ok){
+        const e=await res.json();
+        lastErr=new Error(e.error?.message||`HTTP ${res.status}`);
+        continue;
+      }
+      const data=await res.json();
+      const parts=data.candidates?.[0]?.content?.parts||[];
+      let imgData=null, mimeType='image/png';
+      for(const part of parts){
+        if(part.inlineData){imgData=part.inlineData.data;mimeType=part.inlineData.mimeType||'image/png';break;}
+      }
+      if(!imgData){lastErr=new Error(`${model}: respuesta sin imagen`);continue;}
+      renderImage(imgData,mimeType);
+      btn.disabled=false; btn.textContent='Generar imagen';
       return;
-    }
-    const data=await res.json();
-    const pred=data.predictions?.[0];
-    if(!pred?.bytesBase64Encoded){await generateImageFlash(prompt);return;}
-    renderImage(pred.bytesBase64Encoded, pred.mimeType||'image/png');
-  }catch(err){
-    try{await generateImageFlash(prompt);}
-    catch(err2){
-      document.getElementById('img-area').innerHTML=`<div class="img-placeholder"><div class="err-box" style="text-align:left;max-width:420px"><strong>Error generando imagen:</strong><br>${err2.message}<br><br>Verificá que tu API key tenga acceso a modelos de imagen en Google AI Studio.</div></div>`;
+    }catch(err){
+      lastErr=err;
     }
   }
+  // Si ninguno funcionó
+  document.getElementById('img-area').innerHTML=`<div class="img-placeholder"><div class="err-box" style="text-align:left;max-width:420px"><strong>Error generando imagen:</strong><br>${lastErr?.message||'Error desconocido'}<br><br>Verificá que tu API key de Google AI Studio tenga billing activo y acceso a modelos de imagen.</div></div>`;
   btn.disabled=false; btn.textContent='Generar imagen';
-}
-
-async function generateImageFlash(prompt){
-  // Fallback: gemini-2.0-flash-exp con responseModalities
-  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiKey}`,{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      contents:[{parts:[{text:`Generate an image: ${prompt}`}]}],
-      generationConfig:{responseModalities:['IMAGE','TEXT']}
-    })
-  });
-  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||`HTTP ${res.status}`);}
-  const data=await res.json();
-  const parts=data.candidates?.[0]?.content?.parts||[];
-  let imgData=null, mimeType='image/png';
-  for(const part of parts){if(part.inlineData){imgData=part.inlineData.data;mimeType=part.inlineData.mimeType||'image/png';break;}}
-  if(!imgData) throw new Error('No se recibió imagen. El modelo puede no tener acceso a generación de imágenes en tu región o plan.');
-  renderImage(imgData,mimeType);
-  document.getElementById('img-btn').disabled=false;
-  document.getElementById('img-btn').textContent='Generar imagen';
 }
 
 function renderImage(base64,mimeType){
