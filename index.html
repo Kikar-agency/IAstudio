@@ -595,72 +595,109 @@ function toast(msg){
 
 // ── GEMINI: GENERAR BRIEF ──
 async function generate(){
-  if(!curBrand){toast('Seleccioná una marca primero');return;}
-  if(!geminiKey){toast('Guardá tu Gemini API key primero');return;}
+  if(!curBrand){toast('Selecciona una marca primero');return;}
+  if(!geminiKey){toast('Guarda tu Gemini API key primero');return;}
   const brief=document.getElementById('ws-brief').value.trim();
-  if(!brief){toast('Completá el contexto del pedido');return;}
+  if(!brief){toast('Completa el contexto del pedido');return;}
 
   const b=brands[curBrand];
   const objetivo=Array.from(document.querySelectorAll('#obj-pills .pill.on')).map(p=>p.textContent).join(', ')||'Organico';
   const plataforma=Array.from(document.querySelectorAll('#plat-pills .pill.on')).map(p=>p.textContent).join(', ')||'Instagram';
-
   const btn=document.getElementById('gen-btn');
   btn.disabled=true; btn.textContent='Generando...';
   document.getElementById('output-area').style.display='block';
   document.getElementById('img-panel').style.display='none';
-  const loadHtml='<div class="loading"><div class="spinner"></div><p>Armando brief...</p></div>';
+  const loadHtml='<div class="loading"><div class="spinner"></div><p>Generando con Gemini...</p></div>';
   ['op-prompt','op-struct','op-copy','op-specs'].forEach(id=>document.getElementById(id).innerHTML=loadHtml);
 
-  const fmtDims={'historia':'1080x1920px vertical 9:16','carrusel':'1080x1080px cuadrado 1:1','foto-prod':'1080x1080px cuadrado 1:1','variantes':'1080x1080px cuadrado 1:1','placa':'1080x1080px cuadrado 1:1','png-video':'1920x1080px horizontal 16:9'};
-  const fmtOrient={'historia':'VERTICAL 9:16 portrait orientation tall format','carrusel':'SQUARE 1:1 format','foto-prod':'SQUARE 1:1 format','variantes':'SQUARE 1:1 format','placa':'SQUARE 1:1 format','png-video':'HORIZONTAL 16:9 landscape format'};
-  const dimActual=fmtDims[curFmt]||'1080x1080px';
-  const orientActual=fmtOrient[curFmt]||'SQUARE 1:1 format';
+  const fmtDims={'historia':'1080x1920 vertical 9:16','carrusel':'1080x1080 cuadrado 1:1','foto-prod':'1080x1080 cuadrado 1:1','variantes':'1080x1080 cuadrado 1:1','placa':'1080x1080 cuadrado 1:1','png-video':'1920x1080 horizontal 16:9'};
+  const fmtOrient={'historia':'vertical portrait 9:16','carrusel':'square 1:1','foto-prod':'square 1:1','variantes':'square 1:1','placa':'square 1:1','png-video':'horizontal landscape 16:9'};
+  const dimActual=fmtDims[curFmt]||'1080x1080';
+  const orientActual=fmtOrient[curFmt]||'square 1:1';
   const esPaid=objetivo.toLowerCase().includes('venta')||objetivo.toLowerCase().includes('lead')||objetivo.toLowerCase().includes('trafico')||plataforma.toLowerCase().includes('ads');
 
-  // LLAMADA 1: JSON estructurado sin prompt_ia (evita comillas que rompen JSON)
-  const p1='Sos el motor de Kikar Studio, agencia de marketing Cordoba Argentina. Responde SOLO JSON valido sin markdown.\n\nMARCA: '+b.nombre+'\nRubro: '+b.rubro+'\nTono: '+b.tono+'\nPublico: '+b.publico+'\nPaleta: '+(b.paleta||[]).join(', ')+'\nTipografia: '+b.typo+'\nEstetica: '+b.estetica+'\nPropuesta: '+b.propuesta+'\nCTAs: '+b.ctas+'\n\nPEDIDO\nFormato: '+curFmt+' ('+dimActual+')\nObjetivo: '+objetivo+'\nPlataforma: '+plataforma+'\nTipo: '+(esPaid?'PAID - texto prominente, urgencia, CTA directo':'ORGANICO - lifestyle aspiracional, composicion limpia')+'\nDescripcion: '+brief+'\n\nJSON exacto a devolver:\n{\n  "texto_en_imagen": "texto titulo | subtitulo | CTA que va integrado EN la imagen",\n  "estructura": [{"num":"1","titulo":"nombre","descripcion":"que muestra","texto_visual":"texto pantalla"}],\n  "copy": "caption Instagram espanol argentino con hashtags",\n  "specs": {"dimensiones": "'+dimActual+'","orientacion": "'+orientActual+'","paleta_usar": "hex especificos","tipografia_usar": "fuente jerarquia","formato_exportar": "JPG 90%","notas": "extra"}\n}';
+  // Construccion del prompt usando XML para evitar conflictos con comillas en JSON
+  const sysPrompt=`You are the production engine for Kikar Studio, a marketing agency in Cordoba, Argentina.
+Generate a complete production brief for a social media piece.
+
+<brand>
+Name: ${b.nombre}
+Category: ${b.rubro}
+Tone: ${b.tono}
+Audience: ${b.publico}
+Colors: ${(b.paleta||[]).join(', ')}
+Typography: ${b.typo}
+Visual style: ${b.estetica}
+Value prop: ${b.propuesta}
+CTAs: ${b.ctas}
+</brand>
+
+<request>
+Format: ${curFmt} - ${dimActual} - orientation: ${orientActual}
+Goal: ${objetivo}
+Platform: ${plataforma}
+Type: ${esPaid?'PAID - conversion, urgency, direct CTA':'ORGANIC - aspirational, lifestyle, clean composition'}
+Brief: ${brief}
+</request>
+
+Respond with a JSON object. Use ONLY single quotes inside string values, never double quotes inside strings.
+
+{
+  "texto_en_imagen": "main headline | subtitle | CTA",
+  "prompt_ia": "Image generation prompt in English. Start with [${orientActual} format]. Describe the complete final publishable piece: scene, product, composition, lighting, color palette with hex codes ${(b.paleta||[]).join(' ')}, integrated text overlays with typography style, mood. ${esPaid?'Include urgency badge, strong visual hierarchy.':'Include elegant lifestyle composition, breathing room.'} The generated image must be the final piece ready to publish, not just a background. 200 words max.",
+  "copy": "Instagram caption in Argentine Spanish with hashtags",
+  "specs": {
+    "dimensiones": "${dimActual}",
+    "paleta_usar": "specific hex colors to use",
+    "tipografia_usar": "font and hierarchy",
+    "notas": "production notes"
+  }
+}`;
 
   try{
-    const res1=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+geminiKey,{
+    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+geminiKey,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        contents:[{parts:[{text:p1}]}],
-        generationConfig:{temperature:0.7,maxOutputTokens:2000,responseMimeType:'application/json'}
+        contents:[{parts:[{text:sysPrompt}]}],
+        generationConfig:{temperature:0.7,maxOutputTokens:2500,responseMimeType:'application/json'}
       })
     });
-    if(!res1.ok){const e=await res1.json();throw new Error(e.error?.message||'HTTP '+res1.status);}
-    const d1=await res1.json();
-    const t1=d1.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(!t1) throw new Error('Respuesta vacia de Gemini.');
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'HTTP '+res.status);}
+    const data=await res.json();
+    const rawText=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(!rawText) throw new Error('Respuesta vacia de Gemini. Reintenta.');
 
     let parsed;
     try{
-      const clean=t1.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+      const clean=rawText.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
       parsed=JSON.parse(clean);
     }catch(e){
-      console.error('Raw response LLAMADA 1:', t1.slice(0,500));
-      throw new Error('Error en JSON. Reintenta.');
+      console.error('Raw Gemini response:', rawText.slice(0,800));
+      // Intento de recuperacion: extraer campos con regex
+      try{
+        const getVal=(key)=>{
+          const re=new RegExp('"'+key+'"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"','s');
+          const m=rawText.match(re);
+          return m?m[1].replace(/\\n/g,'\n'):'';
+        };
+        const getObj=(key)=>{
+          const re=new RegExp('"'+key+'"\\s*:\\s*(\\{[^}]+\\})','s');
+          const m=rawText.match(re);
+          try{return m?JSON.parse(m[1]):{};}catch(e){return{};}
+        };
+        parsed={
+          texto_en_imagen:getVal('texto_en_imagen'),
+          prompt_ia:getVal('prompt_ia'),
+          copy:getVal('copy'),
+          specs:getObj('specs')
+        };
+        if(!parsed.prompt_ia&&!parsed.texto_en_imagen) throw new Error('no fields');
+      }catch(e2){
+        throw new Error('Error en JSON. Abri la consola (F12) para ver respuesta cruda.');
+      }
     }
 
-    // LLAMADA 2: prompt imagen como texto plano (sin JSON, sin comillas problematicas)
-    const textoEnImg=parsed.texto_en_imagen||'';
-    const p2='You are a professional AI image prompt engineer for a marketing agency in Argentina.\n\nGenerate a detailed image generation prompt for Gemini image model.\nOutput ONLY the prompt text, nothing else. No JSON, no labels, no explanation.\n\nBrand: '+b.nombre+'\nVisual style: '+b.estetica+'\nColor palette: '+(b.paleta||[]).join(', ')+'\nFormat required: '+orientActual+' - STRICTLY enforce this orientation in the image\nObjective: '+(esPaid?'PAID conversion - prominent text, urgency, strong CTA':'ORGANIC lifestyle - aspirational, elegant, breathing room')+'\nRequest: '+brief+'\nText to integrate in image: '+textoEnImg+'\n\nRules:\n- Start with: ['+orientActual+']\n- Describe complete final publishable piece\n- Include exact text overlays with typography style\n- Include color hex codes: '+(b.paleta||[]).join(', ')+'\n- Include lighting mood composition\n- If paid: urgency badges, strong hierarchy\n- Max 250 words';
-
-    const res2=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+geminiKey,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        contents:[{parts:[{text:p2}]}],
-        generationConfig:{temperature:0.8,maxOutputTokens:600}
-      })
-    });
-    if(!res2.ok){const e=await res2.json();throw new Error(e.error?.message||'HTTP '+res2.status);}
-    const d2=await res2.json();
-    const promptFinal=d2.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(!promptFinal) throw new Error('Gemini no genero el prompt de imagen.');
-
-    parsed.prompt_ia=promptFinal.trim();
     lastOutput=parsed;
     lastPromptIA=parsed.prompt_ia||'';
     lastTextoImagen=parsed.texto_en_imagen||'';
