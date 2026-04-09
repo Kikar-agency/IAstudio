@@ -469,7 +469,7 @@ let brands = {
 };
 
 let curBrand=null, curMode='pieza', curFmt='carrusel', curAR='1:1';
-let lastOutput={}, lastPromptIA='', geminiKey='', currentImgData=null;
+let lastOutput={}, lastPromptIA='', lastTextoImagen='', geminiKey='', currentImgData=null;
 
 window.onload=()=>{
   const s=localStorage.getItem('ks_brands');
@@ -611,47 +611,48 @@ async function generate(){
   const loading=`<div class="loading"><div class="spinner"></div><p>Armando brief para ${b.nombre}...</p></div>`;
   ['op-prompt','op-struct','op-copy','op-specs'].forEach(id=>document.getElementById(id).innerHTML=loading);
 
-  const prompt=`Sos el motor de producción de Kikar Studio, agencia de marketing en Córdoba, Argentina. Generás briefs de producción completos y ejecutables para piezas de contenido digital.
+  // Dimensiones y orientación según formato
+  const fmtDims = {'historia':'1080x1920px vertical 9:16','carrusel':'1080x1080px cuadrado 1:1','foto-prod':'1080x1080px cuadrado 1:1','variantes':'1080x1080px cuadrado 1:1','placa':'1080x1080px cuadrado 1:1','png-video':'1920x1080px horizontal 16:9'};
+  const fmtOrient = {'historia':'VERTICAL 9:16 portrait orientation tall format','carrusel':'SQUARE 1:1 format','foto-prod':'SQUARE 1:1 format','variantes':'SQUARE 1:1 format','placa':'SQUARE 1:1 format','png-video':'HORIZONTAL 16:9 landscape format'};
+  const dimActual = fmtDims[curFmt]||'1080x1080px';
+  const orientActual = fmtOrient[curFmt]||'SQUARE 1:1 format';
+  const esPaid = objetivo.toLowerCase().includes('venta')||objetivo.toLowerCase().includes('lead')||objetivo.toLowerCase().includes('tráfico')||plataforma.toLowerCase().includes('ads');
+  const esOrganico = !esPaid;
 
-BRIEF DE MARCA — ${b.nombre}
-Rubro: ${b.rubro}
-Tono: ${b.tono}
-Público: ${b.publico}
-Paleta: ${(b.paleta||[]).join(', ')}
-Tipografía: ${b.typo}${b.typo2?' / '+b.typo2:''}
+  const prompt=`Sos el motor de producción de Kikar Studio, agencia de marketing en Córdoba, Argentina.
+
+MARCA: ${b.nombre}
+Rubro: ${b.rubro} | Tono: ${b.tono} | Público: ${b.publico}
+Paleta: ${(b.paleta||[]).join(', ')} | Tipografía: ${b.typo}
 Estética: ${b.estetica}
-Propuesta de valor: ${b.propuesta}
-CTAs frecuentes: ${b.ctas}
-Instagram: ${b.handle}
+Propuesta: ${b.propuesta} | CTAs: ${b.ctas}
 
 PEDIDO
-Modo: ${curMode}
-Formato: ${curFmt}
-Objetivo: ${objetivo}
-Plataforma: ${plataforma}
+Formato: ${curFmt} (${dimActual}) | Objetivo: ${objetivo} | Plataforma: ${plataforma}
 Descripción: ${brief}
 
-IMPORTANTE: Respondé ÚNICAMENTE con un objeto JSON válido. Sin texto antes ni después. Sin bloques de código markdown. Sin comillas dobles dentro de los valores de string — usá comillas simples si necesitás citar algo dentro de un valor.
+REGLA CRÍTICA: El prompt_ia que generás debe producir la PIEZA FINAL COMPLETA lista para publicar.
+No solo el fondo — la imagen terminada con composición, texto integrado, y todo el diseño adentro.
+Formato obligatorio: ${orientActual}
+Tipo: ${esPaid ? 'PAID/CONVERSIÓN — texto prominente, urgencia, CTA directo, precio si aplica' : 'ORGÁNICO — lifestyle aspiracional, texto secundario, espacio para respirar'}
+El texto va INTEGRADO en la imagen — no en Canva después.
 
-Estructura exacta que debés devolver:
+Respondé ÚNICAMENTE con JSON válido. Sin markdown. Sin comillas dobles dentro de strings.
+
 {
-  "herramienta_recomendada": "una sola oración sin comillas internas",
-  "prompt_ia": "prompt en inglés muy detallado: estilo fotográfico, iluminación, composición, mood, cámara, colores. Sin comillas dobles adentro.",
-  "estructura": [
-    {"num": "1", "titulo": "titulo sin comillas", "descripcion": "descripcion sin comillas", "texto_visual": "texto que va en pantalla"},
-    {"num": "2", "titulo": "titulo", "descripcion": "descripcion", "texto_visual": "texto"}
-  ],
-  "copy": "copy completo en español argentino. Usa barras verticales para separar slides: Slide 1: texto | Slide 2: texto | Hashtags: #tag1 #tag2",
+  "prompt_ia": "Empieza con [${orientActual}]. Describí: escena completa, ambiente, producto destacado, composición con zonas para texto, iluminación, paleta exacta de colores hex, texto que aparece integrado en la imagen con estilo tipográfico específico, mood general. Que la imagen sea la pieza final publicable. En inglés. Sin comillas dobles.",
+  "texto_en_imagen": "Texto exacto integrado en la imagen: titulo principal | subtitulo | CTA",
+  "estructura": [{"num":"1","titulo":"nombre de la pieza","descripcion":"que muestra","texto_visual":"texto en pantalla"}],
+  "copy": "Caption para Instagram en español argentino con hashtags al final",
   "specs": {
-    "dimensiones": "1080x1080px feed / 1080x1920px historia",
-    "herramienta_imagen": "instruccion concreta sin comillas",
-    "herramienta_composicion": "Canva Pro: pasos concretos",
-    "paleta_usar": "colores hex a usar",
-    "tipografia_usar": "tipografias y jerarquia",
-    "formato_exportar": "JPG 90% calidad para Instagram",
-    "notas_tecnicas": "notas adicionales"
+    "dimensiones": "${dimActual}",
+    "orientacion": "${orientActual}",
+    "paleta_usar": "hex específicos",
+    "tipografia_usar": "fuente y jerarquía",
+    "formato_exportar": "JPG 90% Instagram / PNG ecommerce",
+    "notas": "instrucciones adicionales"
   }
-}`;
+}`
 
   try{
     const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,{
@@ -708,7 +709,7 @@ Estructura exacta que debés devolver:
         throw new Error('Error parseando respuesta de Gemini. Abrí la consola (F12) para ver la respuesta cruda.');
       }
     }
-    lastOutput=parsed; lastPromptIA=parsed.prompt_ia||'';
+    lastOutput=parsed; lastPromptIA=parsed.prompt_ia||''; lastTextoImagen=parsed.texto_en_imagen||'';
     renderOutput(parsed);
   }catch(err){
     const errHtml=`<div class="err-box"><strong>Error:</strong> ${err.message}</div>`;
@@ -719,7 +720,7 @@ Estructura exacta que debés devolver:
 
 function renderOutput(d){
   document.getElementById('op-prompt').innerHTML=`
-    <div class="tool-rec">${esc(d.herramienta_recomendada||'')}</div>
+    ${d.texto_en_imagen?`<div class="tool-rec" style="margin-bottom:8px">Texto en imagen: ${esc(d.texto_en_imagen)}</div>`:''}
     <div class="prompt-box">${esc(d.prompt_ia||'')}</div>`;
   let eHtml='';
   if(Array.isArray(d.estructura)){
@@ -735,7 +736,7 @@ function renderOutput(d){
   document.getElementById('op-struct').innerHTML=eHtml;
   document.getElementById('op-copy').innerHTML=`<div class="copy-block">${esc(d.copy||'')}</div>`;
   const sp=d.specs||{};
-  const rows=[['Dimensiones',sp.dimensiones],['Herramienta imagen',sp.herramienta_imagen],['Composición',sp.herramienta_composicion],['Paleta',sp.paleta_usar],['Tipografía',sp.tipografia_usar],['Exportar',sp.formato_exportar],['Notas',sp.notas_tecnicas]].filter(([,v])=>v);
+  const rows=[['Dimensiones',sp.dimensiones],['Orientación',sp.orientacion],['Paleta',sp.paleta_usar],['Tipografía',sp.tipografia_usar],['Exportar',sp.formato_exportar],['Notas',sp.notas||sp.notas_tecnicas]].filter(([,v])=>v);
   document.getElementById('op-specs').innerHTML=rows.map(([k,v])=>`<div class="spec-row"><span class="spec-k">${k}</span><span class="spec-v">${esc(v)}</span></div>`).join('');
 }
 
@@ -748,6 +749,14 @@ function copyAll(){
 
 function sendToImagen(){
   if(!lastPromptIA){toast('Generá el brief primero');return;}
+  // Determinar aspect ratio correcto para el selector
+  const arMap={'historia':'9:16','carrusel':'1:1','foto-prod':'1:1','variantes':'1:1','placa':'1:1','png-video':'16:9'};
+  const ar = arMap[curFmt]||'1:1';
+  // Seleccionar el AR correcto en la UI
+  document.querySelectorAll('.ar-pill').forEach(p=>{
+    p.classList.toggle('on', p.textContent.trim()===ar);
+    if(p.textContent.trim()===ar) curAR=ar;
+  });
   document.getElementById('img-panel').style.display='block';
   document.getElementById('img-prompt').value=lastPromptIA;
   document.getElementById('img-panel').scrollIntoView({behavior:'smooth',block:'start'});
@@ -766,44 +775,60 @@ async function generateImage(){
   document.getElementById('img-area').innerHTML=`<div class="loading"><div class="spinner"></div><p>Generando con Nano Banana...</p></div>`;
   currentImgData=null;
 
-  // Probar modelos en orden: primero gemini-3.1-flash-image-preview, luego gemini-2.5-flash-image
-  const models = [
-    'gemini-3.1-flash-image-preview',
-    'gemini-2.5-flash-image'
-  ];
-
+  const models = ['gemini-3.1-flash-image-preview','gemini-2.5-flash-image'];
   let lastErr = null;
+
   for(const model of models){
     try{
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-          contents:[{parts:[{text: prompt}]}],
+          contents:[{parts:[{text:`Generate this image for a marketing campaign. High quality, photorealistic, professional product photography. ${prompt}`}]}],
           generationConfig:{responseModalities:['IMAGE','TEXT']}
         })
       });
+
+      const data = await res.json().catch(()=>({}));
+
       if(!res.ok){
-        const e=await res.json();
-        lastErr=new Error(e.error?.message||`HTTP ${res.status}`);
+        lastErr = new Error(`${model}: ${data.error?.message||`HTTP ${res.status}`}`);
+        console.warn('Modelo falló:', model, lastErr.message);
         continue;
       }
-      const data=await res.json();
-      const parts=data.candidates?.[0]?.content?.parts||[];
-      let imgData=null, mimeType='image/png';
+
+      console.log('Respuesta Gemini imagen:', model, JSON.stringify(data).slice(0,400));
+
+      // Extraer imagen — chequeamos inlineData y inline_data (igual que batchIA)
+      const parts = data.candidates?.[0]?.content?.parts || [];
+      let imgData = null, mimeType = 'image/png';
       for(const part of parts){
-        if(part.inlineData){imgData=part.inlineData.data;mimeType=part.inlineData.mimeType||'image/png';break;}
+        const img = part.inlineData || part.inline_data;
+        if(img?.data && (img.mimeType||img.mime_type||'').startsWith('image/')){
+          imgData = img.data;
+          mimeType = img.mimeType || img.mime_type || 'image/png';
+          break;
+        }
       }
-      if(!imgData){lastErr=new Error(`${model}: respuesta sin imagen`);continue;}
-      renderImage(imgData,mimeType);
+
+      if(!imgData){
+        const textPart = parts.find(p=>p.text);
+        lastErr = new Error(`${model}: ${textPart?.text ? 'Devolvió texto: '+textPart.text.slice(0,120) : 'Sin imagen en respuesta'}`);
+        console.warn(lastErr.message);
+        continue;
+      }
+
+      renderImage(imgData, mimeType);
       btn.disabled=false; btn.textContent='Generar imagen';
       return;
+
     }catch(err){
-      lastErr=err;
+      lastErr = err;
+      console.error('Error con modelo', model, err);
     }
   }
-  // Si ninguno funcionó
-  document.getElementById('img-area').innerHTML=`<div class="img-placeholder"><div class="err-box" style="text-align:left;max-width:420px"><strong>Error generando imagen:</strong><br>${lastErr?.message||'Error desconocido'}<br><br>Verificá que tu API key de Google AI Studio tenga billing activo y acceso a modelos de imagen.</div></div>`;
+
+  document.getElementById('img-area').innerHTML=`<div class="img-placeholder"><div class="err-box" style="text-align:left;max-width:420px"><strong>Error generando imagen:</strong><br>${lastErr?.message||'Error desconocido'}<br><br>Abrí la consola (F12) para ver el detalle. Verificá que tu API key tenga billing activo en Google AI Studio.</div></div>`;
   btn.disabled=false; btn.textContent='Generar imagen';
 }
 
